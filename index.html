@@ -62,7 +62,8 @@
         days: 365,
         firstDayOffset: 4,
         circleGroupMargin: 25,
-        spokeWidth: 20,
+        spokeWidth: 2.5,
+        spokeLength: 20,
         weekLineOffset: 5,
         weekLineWidth: 1,
         monthLineOffset: 8,
@@ -191,10 +192,11 @@
         spokes = spokeGroupsEnter
             .append('line')
             .attr('class', 'spoke')
-            .attr('x1', circleGroupRadius - options.spokeWidth)
+            .attr('x1', circleGroupRadius - options.spokeLength)
             .attr('y1', 0)
             .attr('x2', circleGroupRadius)
             .attr('y2', 0)
+            .style('stroke-width', options.spokeWidth)
             .style('opacity', function(d, i) {
               return d;
             });
@@ -227,7 +229,7 @@
               return d.from / options.days * 2 * Math.PI;
             })
             .endAngle(function(d, i) {
-              return (d.to / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+              return ((d.to - 1) / options.days + options.spokeWidth / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
             });
 
         monthLines = circleGroup.selectAll('path.month-line')
@@ -244,7 +246,7 @@
         monthLeftWingsEnter = monthLeftWings.enter().append('line')
             .attr('class', 'month-left-wing')
             .attr('transform', function(d, i) {
-              return 'rotate(' + (d.from / options.days * 360 - 90 + 1 * 180 / (circleGroupRadius * Math.PI)) + ')';
+              return 'rotate(' + (d.from / options.days * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
             })
             .attr('x1', circleGroupRadius + options.monthLineOffset)
             .attr('y1', 0)
@@ -259,7 +261,7 @@
         monthRightWingsEnter = monthRightWings.enter().append('line')
             .attr('class', 'month-right-wing')
             .attr('transform', function(d, i) {
-              return 'rotate(' + (d.to / options.days * 360 - 90 + 1 * 180 / (circleGroupRadius * Math.PI)) + ')';
+              return 'rotate(' + (d.to / options.days * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
             })
             .attr('x1', circleGroupRadius + options.monthLineOffset)
             .attr('y1', 0)
