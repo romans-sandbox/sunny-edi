@@ -1,8 +1,10 @@
 $alpha: #fff;
 $beta: #000;
+$gamma: #aaa;
 
 body {
   margin: 0;
+  font: 16px 'Helvetica Neue', Helvetica, sans-serif;
 }
 
 div.calendar-container {
@@ -14,5 +16,12 @@ svg.calendar {
   line.spoke {
     stroke: $beta;
     stroke-width: 1px;
+  }
+
+  text.month-name {
+    font-size: 0.7em;
+    text-anchor: middle;
+    dominant-baseline: central;
+    fill: $gamma;
   }
 }

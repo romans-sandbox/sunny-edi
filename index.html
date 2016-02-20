@@ -11,10 +11,40 @@
   </div>
   <script src="node_modules/d3/d3.min.js"></script>
   <script>
+    d3.selection.prototype.moveToFront = function() {
+      return this.each(function() {
+        this.parentNode.appendChild(this);
+      });
+    };
+
+    d3.selection.prototype.moveToBack = function() {
+      return this.each(function() {
+        var firstChild = this.parentNode.firstChild;
+        if (firstChild) {
+          this.parentNode.insertBefore(this, firstChild);
+        }
+      });
+    };
+  </script>
+  <script>
     var k = {
       alpha: '#fff',
-      beta: '#000'
+      beta: '#000',
+      gamma: '#aaa'
     };
+
+    var utils = function() {
+      var module = {};
+
+      var monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+
+      module.monthName = function(i) {
+        return monthNames[i];
+      };
+
+      return module;
+    }();
 
     var calendarChart = function() {
       var module = {};
@@ -31,10 +61,14 @@
       var options = {
         days: 365,
         firstDayOffset: 4,
-        circleGroupMargin: 10,
+        circleGroupMargin: 25,
         spokeWidth: 20,
         weekLineOffset: 5,
-        weekLineWidth: 1
+        weekLineWidth: 1,
+        monthLineOffset: 8,
+        monthLineWidth: 2,
+        monthWingWidth: 10,
+        monthNameOffset: 18
       };
 
       var availWidth = width - margins.left - margins.right;
@@ -75,10 +109,53 @@
         return result;
       }();
 
+      // months data
+      var monthsData = [{
+        from: 1,
+        to: 31
+      }, {
+        from: 32,
+        to: 59
+      }, {
+        from: 60,
+        to: 90
+      }, {
+        from: 91,
+        to: 120
+      }, {
+        from: 121,
+        to: 151
+      }, {
+        from: 152,
+        to: 181
+      }, {
+        from: 182,
+        to: 212
+      }, {
+        from: 213,
+        to: 243
+      }, {
+        from: 244,
+        to: 273
+      }, {
+        from: 274,
+        to: 304
+      }, {
+        from: 305,
+        to: 334
+      }, {
+        from: 335,
+        to: 365
+      }];
+
       var svg, mainGroup;
       var circleGroup, circleGroupRadius;
       var spokeGroups, spokeGroupsEnter, spokes;
       var weekLines, weekLinesEnter, weekLineArc;
+      var monthLines, monthLinesEnter, monthLineArc;
+      var monthLeftWings, monthLeftWingsEnter;
+      var monthRightWings, monthRightWingsEnter;
+      var monthNameGroups, monthNameGroupsEnter;
 
       module.run = function() {
         svg = d3.select('#calendar')
@@ -128,10 +205,10 @@
             .innerRadius(circleGroupRadius + options.weekLineOffset)
             .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekLineWidth)
             .startAngle(function(d, i) {
-              return (d[0] - 1) / options.days * 2 * Math.PI;
+              return (d[0] + 1) / options.days * 2 * Math.PI;
             })
             .endAngle(function(d, i) {
-              return ((d[1] - 2) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+              return ((d[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
             });
 
         weekLines = circleGroup.selectAll('path.week-line')
@@ -140,6 +217,79 @@
         weekLinesEnter = weekLines.enter().append('path')
             .attr('d', weekLineArc)
             .style('fill', k.beta);
+        
+        // draw month lines
+
+        monthLineArc = d3.svg.arc()
+            .innerRadius(circleGroupRadius + options.monthLineOffset)
+            .outerRadius(circleGroupRadius + options.monthLineOffset + options.monthLineWidth)
+            .startAngle(function(d, i) {
+              return d.from / options.days * 2 * Math.PI;
+            })
+            .endAngle(function(d, i) {
+              return (d.to / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+            });
+
+        monthLines = circleGroup.selectAll('path.month-line')
+            .data(monthsData);
+
+        monthLinesEnter = monthLines.enter().append('path')
+            .attr('d', monthLineArc)
+            .style('fill', k.gamma)
+            .moveToBack();
+
+        monthLeftWings = circleGroup.selectAll('line.month-left-wing')
+            .data(monthsData);
+
+        monthLeftWingsEnter = monthLeftWings.enter().append('line')
+            .attr('class', 'month-left-wing')
+            .attr('transform', function(d, i) {
+              return 'rotate(' + (d.from / options.days * 360 - 90 + 1 * 180 / (circleGroupRadius * Math.PI)) + ')';
+            })
+            .attr('x1', circleGroupRadius + options.monthLineOffset)
+            .attr('y1', 0)
+            .attr('x2', circleGroupRadius + options.monthLineOffset + options.monthWingWidth)
+            .attr('y2', 0)
+            .style('stroke-width', options.monthLineWidth)
+            .style('stroke', k.gamma);
+
+        monthRightWings = circleGroup.selectAll('line.month-right-wing')
+            .data(monthsData);
+
+        monthRightWingsEnter = monthRightWings.enter().append('line')
+            .attr('class', 'month-right-wing')
+            .attr('transform', function(d, i) {
+              return 'rotate(' + (d.to / options.days * 360 - 90 + 1 * 180 / (circleGroupRadius * Math.PI)) + ')';
+            })
+            .attr('x1', circleGroupRadius + options.monthLineOffset)
+            .attr('y1', 0)
+            .attr('x2', circleGroupRadius + options.monthLineOffset + options.monthWingWidth)
+            .attr('y2', 0)
+            .style('stroke-width', options.monthLineWidth)
+            .style('stroke', k.gamma);
+
+        monthNameGroups = circleGroup.selectAll('text.month-name')
+            .data(monthsData);
+
+        monthNameGroupsEnter = monthNameGroups.enter().append('g')
+            .attr('transform', function(d, i) {
+              return 'rotate(' + ((i + 0.5) / 12 * 360 - 90) + ')';
+            });
+
+        monthNameGroupsEnter.append('text')
+            .attr('class', 'month-name')
+            .attr('transform', function(d, i) {
+              var translateX, rotate;
+
+              translateX = circleGroupRadius + options.monthNameOffset;
+
+              rotate = i > 2 && i < 9 ? 270 : 90;
+
+              return 'translate(' + translateX + ', 0) rotate(' + rotate + ')';
+            })
+            .text(function(d, i) {
+              return utils.monthName(i);
+            });
       };
 
       return module;
