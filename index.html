@@ -30,7 +30,10 @@
     var k = {
       alpha: '#fff',
       beta: '#000',
-      gamma: '#aaa'
+      gamma: '#aaa',
+      delta: '#fcff6c',
+      epsilon: '#fff5b2',
+      zeta: '#ccc'
     };
 
     var utils = function() {
@@ -62,7 +65,7 @@
         days: 365,
         firstDayOffset: 4,
         circleGroupMargin: 25,
-        spokeWidth: 2.5,
+        spokeWidth: 3,
         spokeLength: 20,
         weekLineOffset: 5,
         weekLineWidth: 1,
@@ -158,6 +161,18 @@
       var monthRightWings, monthRightWingsEnter;
       var monthNameGroups, monthNameGroupsEnter;
 
+      function sunshine(d, i) {
+        if (d > 0.9) {
+          return k.delta;
+        }
+
+        if (d > 0.8) {
+          return k.epsilon;
+        }
+
+        return k.zeta;
+      }
+
       module.run = function() {
         svg = d3.select('#calendar')
             .attr('width', width)
@@ -197,9 +212,7 @@
             .attr('x2', circleGroupRadius)
             .attr('y2', 0)
             .style('stroke-width', options.spokeWidth)
-            .style('opacity', function(d, i) {
-              return d;
-            });
+            .style('stroke', sunshine);
 
         // draw week lines
 
