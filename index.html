@@ -5,9 +5,41 @@
   <title>Sunny Edinburgh</title>
 </head>
 <body>
+  <svg id="calendar"></svg>
   <script src="node_modules/d3/d3.min.js"></script>
   <script>
-    console.log(d3);
+    var calendarChart = function() {
+      var module = {};
+
+      var width = 500;
+      var height = 500;
+      var margins = {
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+      };
+
+      var availWidth = width - margins.left - margins.right;
+      var availHeight = height - margins.top - margins.bottom;
+
+      var svg, mainGroup;
+
+      module.run = function() {
+        svg = d3.select('#calendar')
+            .attr('width', width)
+            .attr('height', height);
+
+        mainGroup = svg.append('g')
+            .attr('transform', 'translate(' + margins.left + ', ' + margins.top + ')');
+
+        //
+      };
+
+      return module;
+    }();
+
+    calendarChart.run();
   </script>
 </body>
 </html>
