@@ -11,6 +11,11 @@
   </div>
   <script src="node_modules/d3/d3.min.js"></script>
   <script>
+    var k = {
+      alpha: '#fff',
+      beta: '#000'
+    };
+
     var calendarChart = function() {
       var module = {};
 
@@ -25,8 +30,11 @@
 
       var options = {
         days: 365,
+        firstMondayOffset: 0,
         circleGroupMargin: 10,
-        spokeWidth: 20
+        spokeWidth: 20,
+        weekLineOffset: 5,
+        weekLineWidth: 1
       };
 
       var availWidth = width - margins.left - margins.right;
@@ -43,9 +51,34 @@
         return result;
       }();
 
+      // weeks data
+      var weeksData = function() {
+        var i, result = [], count, from, to;
+
+        if (options.firstMondayOffset > 0) {
+          result.push([0, options.firstMondayOffset]);
+        }
+
+        count = Math.ceil((options.days - options.firstMondayOffset) / 7);
+
+        for (i = options.firstMondayOffset; i < count; i++) {
+          from = i * 7;
+          to = (i + 1) * 7;
+
+          if (to > options.days) {
+            to = options.days;
+          }
+
+          result.push([from, to]);
+        }
+
+        return result;
+      }();
+
       var svg, mainGroup;
       var circleGroup, circleGroupRadius;
       var spokeGroups, spokeGroupsEnter, spokes;
+      var weekLines, weekLinesEnter, weekLineArc;
 
       module.run = function() {
         svg = d3.select('#calendar')
@@ -88,6 +121,25 @@
             .style('opacity', function(d, i) {
               return d;
             });
+
+        // draw week lines
+
+        weekLineArc = d3.svg.arc()
+            .innerRadius(circleGroupRadius + options.weekLineOffset)
+            .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekLineWidth)
+            .startAngle(function(d, i) {
+              return (d[0] - 1) / options.days * 2 * Math.PI;
+            })
+            .endAngle(function(d, i) {
+              return ((d[1] - 2) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+            });
+
+        weekLines = circleGroup.selectAll('path.week-line')
+            .data(weeksData);
+
+        weekLinesEnter = weekLines.enter().append('path')
+            .attr('d', weekLineArc)
+            .style('fill', k.beta);
       };
 
       return module;
