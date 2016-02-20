@@ -30,7 +30,7 @@
 
       var options = {
         days: 365,
-        firstMondayOffset: 0,
+        firstDayOffset: 4,
         circleGroupMargin: 10,
         spokeWidth: 20,
         weekLineOffset: 5,
@@ -55,15 +55,15 @@
       var weeksData = function() {
         var i, result = [], count, from, to;
 
-        if (options.firstMondayOffset > 0) {
-          result.push([0, options.firstMondayOffset]);
+        if (options.firstDayOffset > 0) {
+          result.push([0, options.firstDayOffset]);
         }
 
-        count = Math.ceil((options.days - options.firstMondayOffset) / 7);
+        count = Math.ceil(options.days / 7);
 
-        for (i = options.firstMondayOffset; i < count; i++) {
-          from = i * 7;
-          to = (i + 1) * 7;
+        for (i = (options.firstDayOffset > 0 ? 1 : 0); i < count; i++) {
+          from = i * 7 - options.firstDayOffset + 1;
+          to = (i + 1) * 7 - options.firstDayOffset + 1;
 
           if (to > options.days) {
             to = options.days;
