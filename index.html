@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Sunny Edinburgh</title>
+  <link rel="stylesheet" href="assets/scss/main.css">
 </head>
 <body>
-  <svg id="calendar"></svg>
+  <svg id="calendar" class="calendar"></svg>
   <script src="node_modules/d3/d3.min.js"></script>
   <script>
     var calendarChart = function() {
@@ -21,14 +22,28 @@
       };
 
       var options = {
-        circleGroupMargin: 10
+        days: 365,
+        circleGroupMargin: 10,
+        spokeWidth: 20
       };
 
       var availWidth = width - margins.left - margins.right;
       var availHeight = height - margins.top - margins.bottom;
 
+      // sample random data
+      var data = function() {
+        var i, result = [];
+
+        for (i = 0; i < options.days; i++) {
+          result.push(Math.random());
+        }
+
+        return result;
+      }();
+
       var svg, mainGroup;
       var circleGroup, circleGroupRadius;
+      var spokeGroups, spokeGroupsEnter, spokes;
 
       module.run = function() {
         svg = d3.select('#calendar')
@@ -51,7 +66,26 @@
                 ')'
             );
 
+        // draw spokes
 
+        spokeGroups = circleGroup.selectAll('g.spoke-group').data(data);
+
+        spokeGroupsEnter = spokeGroups.enter()
+            .append('g')
+            .attr('transform', function(d, i) {
+              return 'rotate(' + (i / options.days * 360) + ')';
+            });
+
+        spokes = spokeGroupsEnter
+            .append('line')
+            .attr('class', 'spoke')
+            .attr('x1', circleGroupRadius - options.spokeWidth)
+            .attr('y1', 0)
+            .attr('x2', circleGroupRadius)
+            .attr('y2', 0)
+            .style('opacity', function(d, i) {
+              return d;
+            });
       };
 
       return module;

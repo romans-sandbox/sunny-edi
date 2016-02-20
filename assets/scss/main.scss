@@ -1,0 +1,9 @@
+$alpha: #fff;
+$beta: #000;
+
+svg.calendar {
+  line.spoke {
+    stroke: $beta;
+    stroke-width: 1px;
+  }
+}
