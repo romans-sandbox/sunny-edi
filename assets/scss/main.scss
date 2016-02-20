@@ -1,6 +1,15 @@
 $alpha: #fff;
 $beta: #000;
 
+body {
+  margin: 0;
+}
+
+div.calendar-container {
+  margin-top: 30px;
+  text-align: center;
+}
+
 svg.calendar {
   line.spoke {
     stroke: $beta;
