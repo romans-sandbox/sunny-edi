@@ -1,0 +1,14 @@
+{
+  "name": "romans-sunny-edi",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "author": "romans <romans.dev@gmail.com>",
+  "dependencies": {
+    "d3": "^3.5.13",
+    "node-sass": "^3.4.2",
+    "sass-loader": "^3.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {}
+}
