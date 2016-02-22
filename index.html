@@ -64,7 +64,7 @@
       var options = {
         days: 365,
         firstDayOffset: 4,
-        circleGroupMargin: 25,
+        circleGroupMargin: 40,
         spokeWidth: 3,
         spokeLength: 20,
         weekLineOffset: 5,
@@ -72,7 +72,10 @@
         monthLineOffset: 8,
         monthLineWidth: 2,
         monthWingWidth: 10,
-        monthNameOffset: 18
+        monthNameOffset: 18,
+        weekSliceInnerOffset: 150,
+        weekSliceOuterOffset: 25,
+        weekSliceTextOffset: 5
       };
 
       var availWidth = width - margins.left - margins.right;
@@ -94,7 +97,7 @@
         var i, result = [], count, from, to;
 
         if (options.firstDayOffset > 0) {
-          result.push([0, options.firstDayOffset]);
+          result.push([0, options.firstDayOffset, 1]);
         }
 
         count = Math.ceil(options.days / 7);
@@ -107,7 +110,7 @@
             to = options.days;
           }
 
-          result.push([from, to]);
+          result.push([from, to, i + 1]);
         }
 
         return result;
@@ -160,6 +163,8 @@
       var monthLeftWings, monthLeftWingsEnter;
       var monthRightWings, monthRightWingsEnter;
       var monthNameGroups, monthNameGroupsEnter;
+      var weekSlice, weekSliceArc;
+      var weekNumberLabelGroup, weekNumberLabelText;
 
       function sunshine(d, i) {
         if (d > 0.9) {
@@ -171,6 +176,30 @@
         }
 
         return k.zeta;
+      }
+
+      function mapRadiansToDay(rad) {
+        var day;
+
+        if (rad < 0) {
+          rad += 2 * Math.PI;
+        }
+
+        day = Math.floor(rad / (2 * Math.PI) * options.days);
+
+        return day;
+      }
+
+      function dayToWeekData(day) {
+        var i;
+
+        for (i = 0; i < weeksData.length; i++) {
+          if (day >= weeksData[i][0] && day <= weeksData[i][1]) {
+            return weeksData[i];
+          }
+        }
+
+        return null;
       }
 
       module.run = function() {
@@ -305,6 +334,69 @@
             .text(function(d, i) {
               return utils.monthName(i);
             });
+
+        // prepare week slice; draw it when hovering over the chart
+        // draw week number label
+
+        weekSliceArc = d3.svg.arc()
+            .innerRadius(options.weekSliceInnerOffset)
+            .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekSliceOuterOffset);
+
+        weekSlice = circleGroup.append('path')
+            .attr('class', 'week-slice')
+            .moveToBack();
+
+        weekNumberLabelGroup = circleGroup.append('g');
+
+        weekNumberLabelText = weekNumberLabelGroup.append('text')
+            .attr('class', 'week-number-label');
+
+        d3.select(document).on('mousemove', function() {
+          var coords, rad, weekData, rotationStartAngle, rotationEndAngle, textLabelRotation;
+
+          coords = d3.mouse(circleGroup.node());
+
+          rad = Math.atan2(coords[0], -coords[1]);
+
+          weekData = dayToWeekData(mapRadiansToDay(rad));
+
+          if (weekData !== null) {
+            rotationStartAngle = (weekData[0] + 1) / options.days * 2 * Math.PI;
+            rotationEndAngle = ((weekData[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+
+            weekSliceArc
+                .startAngle(function() {
+                  return rotationStartAngle;
+                })
+                .endAngle(function() {
+                  return rotationEndAngle;
+                });
+
+            weekSlice
+                .attr('d', weekSliceArc);
+
+            textLabelRotation = (rotationStartAngle + rotationEndAngle) / 2 / (2 * Math.PI) * 360 - 90;
+
+            weekNumberLabelGroup
+                .attr('transform', 'rotate(' + textLabelRotation + ')');
+
+            weekNumberLabelText
+                .text('week ' + weekData[2])
+                .attr('transform', function() {
+                  var translateX, rotate;
+
+                  translateX =
+                      circleGroupRadius +
+                      options.weekLineOffset +
+                      options.weekSliceOuterOffset +
+                      options.weekSliceTextOffset;
+
+                  rotate = textLabelRotation > 0 && textLabelRotation < 180 ? 270 : 90;
+
+                  return 'translate(' + translateX + ', 0) rotate(' + rotate + ')';
+                });
+          }
+        });
       };
 
       return module;

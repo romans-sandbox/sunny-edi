@@ -26,4 +26,15 @@ svg.calendar {
     dominant-baseline: central;
     fill: $gamma;
   }
+
+  path.week-slice {
+    fill: $epsilon;
+  }
+
+  text.week-number-label {
+    font-size: 0.6em;
+    text-anchor: middle;
+    dominant-baseline: central;
+    fill: $beta;
+  }
 }
