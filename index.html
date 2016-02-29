@@ -81,16 +81,7 @@
       var availWidth = width - margins.left - margins.right;
       var availHeight = height - margins.top - margins.bottom;
 
-      // sample random data
-      var data = function() {
-        var i, result = [];
-
-        for (i = 0; i < options.days; i++) {
-          result.push(Math.random());
-        }
-
-        return result;
-      }();
+      var data;
 
       // weeks data
       var weeksData = function() {
@@ -167,12 +158,12 @@
       var weekNumberLabelGroup, weekNumberLabelText;
 
       function sunshine(d, i) {
-        if (d > 0.9) {
+        if (d.weather_desc === 'Sunny') {
           return k.delta;
         }
 
-        if (d > 0.8) {
-          return k.epsilon;
+        if (d.cloud_cover <= 10) {
+          return k.delta;
         }
 
         return k.zeta;
@@ -203,199 +194,211 @@
       }
 
       module.run = function() {
-        svg = d3.select('#calendar')
-            .attr('width', width)
-            .attr('height', height);
-
-        mainGroup = svg.append('g')
-            .attr('transform', 'translate(' + margins.left + ', ' + margins.top + ')');
-
-        // prepare circle group
-
-        circleGroupRadius = Math.min(availWidth, availHeight) / 2 - options.circleGroupMargin;
-        circleGroup = mainGroup.append('g')
-            .attr(
-                'transform',
-                'translate(' +
-                (circleGroupRadius + options.circleGroupMargin) +
-                ', ' +
-                (circleGroupRadius + options.circleGroupMargin) +
-                ')'
-            );
-
-        // draw spokes
-
-        spokeGroups = circleGroup.selectAll('g.spoke-group').data(data);
-
-        spokeGroupsEnter = spokeGroups.enter()
-            .append('g')
-            .attr('transform', function(d, i) {
-              return 'rotate(' + (i / options.days * 360) + ')';
-            });
-
-        spokes = spokeGroupsEnter
-            .append('line')
-            .attr('class', 'spoke')
-            .attr('x1', circleGroupRadius - options.spokeLength)
-            .attr('y1', 0)
-            .attr('x2', circleGroupRadius)
-            .attr('y2', 0)
-            .style('stroke-width', options.spokeWidth)
-            .style('stroke', sunshine);
-
-        // draw week lines
-
-        weekLineArc = d3.svg.arc()
-            .innerRadius(circleGroupRadius + options.weekLineOffset)
-            .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekLineWidth)
-            .startAngle(function(d, i) {
-              return (d[0] + 1) / options.days * 2 * Math.PI;
-            })
-            .endAngle(function(d, i) {
-              return ((d[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
-            });
-
-        weekLines = circleGroup.selectAll('path.week-line')
-            .data(weeksData);
-
-        weekLinesEnter = weekLines.enter().append('path')
-            .attr('d', weekLineArc)
-            .style('fill', k.beta);
-        
-        // draw month lines
-
-        monthLineArc = d3.svg.arc()
-            .innerRadius(circleGroupRadius + options.monthLineOffset)
-            .outerRadius(circleGroupRadius + options.monthLineOffset + options.monthLineWidth)
-            .startAngle(function(d, i) {
-              return d.from / options.days * 2 * Math.PI;
-            })
-            .endAngle(function(d, i) {
-              return ((d.to - 1) / options.days + options.spokeWidth / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
-            });
-
-        monthLines = circleGroup.selectAll('path.month-line')
-            .data(monthsData);
-
-        monthLinesEnter = monthLines.enter().append('path')
-            .attr('d', monthLineArc)
-            .style('fill', k.gamma)
-            .moveToBack();
-
-        monthLeftWings = circleGroup.selectAll('line.month-left-wing')
-            .data(monthsData);
-
-        monthLeftWingsEnter = monthLeftWings.enter().append('line')
-            .attr('class', 'month-left-wing')
-            .attr('transform', function(d, i) {
-              return 'rotate(' + (d.from / options.days * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
-            })
-            .attr('x1', circleGroupRadius + options.monthLineOffset)
-            .attr('y1', 0)
-            .attr('x2', circleGroupRadius + options.monthLineOffset + options.monthWingWidth)
-            .attr('y2', 0)
-            .style('stroke-width', options.monthLineWidth)
-            .style('stroke', k.gamma);
-
-        monthRightWings = circleGroup.selectAll('line.month-right-wing')
-            .data(monthsData);
-
-        monthRightWingsEnter = monthRightWings.enter().append('line')
-            .attr('class', 'month-right-wing')
-            .attr('transform', function(d, i) {
-              return 'rotate(' + (d.to / options.days * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
-            })
-            .attr('x1', circleGroupRadius + options.monthLineOffset)
-            .attr('y1', 0)
-            .attr('x2', circleGroupRadius + options.monthLineOffset + options.monthWingWidth)
-            .attr('y2', 0)
-            .style('stroke-width', options.monthLineWidth)
-            .style('stroke', k.gamma);
-
-        monthNameGroups = circleGroup.selectAll('text.month-name')
-            .data(monthsData);
-
-        monthNameGroupsEnter = monthNameGroups.enter().append('g')
-            .attr('transform', function(d, i) {
-              return 'rotate(' + ((i + 0.5) / 12 * 360 - 90) + ')';
-            });
-
-        monthNameGroupsEnter.append('text')
-            .attr('class', 'month-name')
-            .attr('transform', function(d, i) {
-              var translateX, rotate;
-
-              translateX = circleGroupRadius + options.monthNameOffset;
-
-              rotate = i > 2 && i < 9 ? 270 : 90;
-
-              return 'translate(' + translateX + ', 0) rotate(' + rotate + ')';
-            })
-            .text(function(d, i) {
-              return utils.monthName(i);
-            });
-
-        // prepare week slice; draw it when hovering over the chart
-        // draw week number label
-
-        weekSliceArc = d3.svg.arc()
-            .innerRadius(options.weekSliceInnerOffset)
-            .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekSliceOuterOffset);
-
-        weekSlice = circleGroup.append('path')
-            .attr('class', 'week-slice')
-            .moveToBack();
-
-        weekNumberLabelGroup = circleGroup.append('g');
-
-        weekNumberLabelText = weekNumberLabelGroup.append('text')
-            .attr('class', 'week-number-label');
-
-        d3.select(document).on('mousemove', function() {
-          var coords, rad, weekData, rotationStartAngle, rotationEndAngle, textLabelRotation;
-
-          coords = d3.mouse(circleGroup.node());
-
-          rad = Math.atan2(coords[0], -coords[1]);
-
-          weekData = dayToWeekData(mapRadiansToDay(rad));
-
-          if (weekData !== null) {
-            rotationStartAngle = (weekData[0] + 1) / options.days * 2 * Math.PI;
-            rotationEndAngle = ((weekData[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
-
-            weekSliceArc
-                .startAngle(function() {
-                  return rotationStartAngle;
-                })
-                .endAngle(function() {
-                  return rotationEndAngle;
-                });
-
-            weekSlice
-                .attr('d', weekSliceArc);
-
-            textLabelRotation = (rotationStartAngle + rotationEndAngle) / 2 / (2 * Math.PI) * 360 - 90;
-
-            weekNumberLabelGroup
-                .attr('transform', 'rotate(' + textLabelRotation + ')');
-
-            weekNumberLabelText
-                .text('week ' + weekData[2])
-                .attr('transform', function() {
-                  var translateX, rotate;
-
-                  translateX =
-                      circleGroupRadius +
-                      options.weekLineOffset +
-                      options.weekSliceOuterOffset +
-                      options.weekSliceTextOffset;
-
-                  rotate = textLabelRotation > 0 && textLabelRotation < 180 ? 270 : 90;
-
-                  return 'translate(' + translateX + ', 0) rotate(' + rotate + ')';
-                });
+        d3.csv('assets/data/edi-2015.csv', function(error, rows) {
+          if (error) {
+            throw error;
           }
+
+          data = rows.map(function(d, i) {
+            d.cloud_cover = +d.cloud_cover;
+
+            return d;
+          });
+
+          svg = d3.select('#calendar')
+              .attr('width', width)
+              .attr('height', height);
+
+          mainGroup = svg.append('g')
+              .attr('transform', 'translate(' + margins.left + ', ' + margins.top + ')');
+
+          // prepare circle group
+
+          circleGroupRadius = Math.min(availWidth, availHeight) / 2 - options.circleGroupMargin;
+          circleGroup = mainGroup.append('g')
+              .attr(
+                  'transform',
+                  'translate(' +
+                  (circleGroupRadius + options.circleGroupMargin) +
+                  ', ' +
+                  (circleGroupRadius + options.circleGroupMargin) +
+                  ')'
+              );
+
+          // draw spokes
+
+          spokeGroups = circleGroup.selectAll('g.spoke-group').data(data);
+
+          spokeGroupsEnter = spokeGroups.enter()
+              .append('g')
+              .attr('transform', function(d, i) {
+                return 'rotate(' + (i / options.days * 360) + ')';
+              });
+
+          spokes = spokeGroupsEnter
+              .append('line')
+              .attr('class', 'spoke')
+              .attr('x1', circleGroupRadius - options.spokeLength)
+              .attr('y1', 0)
+              .attr('x2', circleGroupRadius)
+              .attr('y2', 0)
+              .style('stroke-width', options.spokeWidth)
+              .style('stroke', sunshine);
+
+          // draw week lines
+
+          weekLineArc = d3.svg.arc()
+              .innerRadius(circleGroupRadius + options.weekLineOffset)
+              .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekLineWidth)
+              .startAngle(function(d, i) {
+                return (d[0] + 1) / options.days * 2 * Math.PI;
+              })
+              .endAngle(function(d, i) {
+                return ((d[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+              });
+
+          weekLines = circleGroup.selectAll('path.week-line')
+              .data(weeksData);
+
+          weekLinesEnter = weekLines.enter().append('path')
+              .attr('d', weekLineArc)
+              .style('fill', k.beta);
+
+          // draw month lines
+
+          monthLineArc = d3.svg.arc()
+              .innerRadius(circleGroupRadius + options.monthLineOffset)
+              .outerRadius(circleGroupRadius + options.monthLineOffset + options.monthLineWidth)
+              .startAngle(function(d, i) {
+                return d.from / options.days * 2 * Math.PI;
+              })
+              .endAngle(function(d, i) {
+                return ((d.to - 1) / options.days + options.spokeWidth / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+              });
+
+          monthLines = circleGroup.selectAll('path.month-line')
+              .data(monthsData);
+
+          monthLinesEnter = monthLines.enter().append('path')
+              .attr('d', monthLineArc)
+              .style('fill', k.gamma)
+              .moveToBack();
+
+          monthLeftWings = circleGroup.selectAll('line.month-left-wing')
+              .data(monthsData);
+
+          monthLeftWingsEnter = monthLeftWings.enter().append('line')
+              .attr('class', 'month-left-wing')
+              .attr('transform', function(d, i) {
+                return 'rotate(' + (d.from / options.days * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
+              })
+              .attr('x1', circleGroupRadius + options.monthLineOffset)
+              .attr('y1', 0)
+              .attr('x2', circleGroupRadius + options.monthLineOffset + options.monthWingWidth)
+              .attr('y2', 0)
+              .style('stroke-width', options.monthLineWidth)
+              .style('stroke', k.gamma);
+
+          monthRightWings = circleGroup.selectAll('line.month-right-wing')
+              .data(monthsData);
+
+          monthRightWingsEnter = monthRightWings.enter().append('line')
+              .attr('class', 'month-right-wing')
+              .attr('transform', function(d, i) {
+                return 'rotate(' + (d.to / options.days * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
+              })
+              .attr('x1', circleGroupRadius + options.monthLineOffset)
+              .attr('y1', 0)
+              .attr('x2', circleGroupRadius + options.monthLineOffset + options.monthWingWidth)
+              .attr('y2', 0)
+              .style('stroke-width', options.monthLineWidth)
+              .style('stroke', k.gamma);
+
+          monthNameGroups = circleGroup.selectAll('text.month-name')
+              .data(monthsData);
+
+          monthNameGroupsEnter = monthNameGroups.enter().append('g')
+              .attr('transform', function(d, i) {
+                return 'rotate(' + ((i + 0.5) / 12 * 360 - 90) + ')';
+              });
+
+          monthNameGroupsEnter.append('text')
+              .attr('class', 'month-name')
+              .attr('transform', function(d, i) {
+                var translateX, rotate;
+
+                translateX = circleGroupRadius + options.monthNameOffset;
+
+                rotate = i > 2 && i < 9 ? 270 : 90;
+
+                return 'translate(' + translateX + ', 0) rotate(' + rotate + ')';
+              })
+              .text(function(d, i) {
+                return utils.monthName(i);
+              });
+
+          // prepare week slice; draw it when hovering over the chart
+          // draw week number label
+
+          weekSliceArc = d3.svg.arc()
+              .innerRadius(options.weekSliceInnerOffset)
+              .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekSliceOuterOffset);
+
+          weekSlice = circleGroup.append('path')
+              .attr('class', 'week-slice')
+              .moveToBack();
+
+          weekNumberLabelGroup = circleGroup.append('g');
+
+          weekNumberLabelText = weekNumberLabelGroup.append('text')
+              .attr('class', 'week-number-label');
+
+          d3.select(document).on('mousemove', function() {
+            var coords, rad, weekData, rotationStartAngle, rotationEndAngle, textLabelRotation;
+
+            coords = d3.mouse(circleGroup.node());
+
+            rad = Math.atan2(coords[0], -coords[1]);
+
+            weekData = dayToWeekData(mapRadiansToDay(rad));
+
+            if (weekData !== null) {
+              rotationStartAngle = (weekData[0] + 1) / options.days * 2 * Math.PI;
+              rotationEndAngle = ((weekData[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+
+              weekSliceArc
+                  .startAngle(function() {
+                    return rotationStartAngle;
+                  })
+                  .endAngle(function() {
+                    return rotationEndAngle;
+                  });
+
+              weekSlice
+                  .attr('d', weekSliceArc);
+
+              textLabelRotation = (rotationStartAngle + rotationEndAngle) / 2 / (2 * Math.PI) * 360 - 90;
+
+              weekNumberLabelGroup
+                  .attr('transform', 'rotate(' + textLabelRotation + ')');
+
+              weekNumberLabelText
+                  .text('week ' + weekData[2])
+                  .attr('transform', function() {
+                    var translateX, rotate;
+
+                    translateX =
+                        circleGroupRadius +
+                        options.weekLineOffset +
+                        options.weekSliceOuterOffset +
+                        options.weekSliceTextOffset;
+
+                    rotate = textLabelRotation > 0 && textLabelRotation < 180 ? 270 : 90;
+
+                    return 'translate(' + translateX + ', 0) rotate(' + rotate + ')';
+                  });
+            }
+          });
         });
       };
 
