@@ -136,11 +136,11 @@
       var module = {};
 
       var width = 500;
-      var height = 550;
+      var height = 600;
       var margins = {
-        top: 70,
+        top: 20,
         right: 0,
-        bottom: 10,
+        bottom: 0,
         left: 0
       };
 
@@ -159,7 +159,7 @@
         weekSliceInnerOffset: 150,
         weekSliceOuterOffset: 25,
         weekSliceTextOffset: 5,
-        locationsOffset: -30,
+        locationsOffset: 15,
         locationsInnerSpace: 10,
         locationTextPadding: 5
       };
@@ -363,9 +363,9 @@
             .attr(
                 'transform',
                 'translate(' +
-                ((availWidth) / 2) +
+                (availWidth / 2) +
                 ', ' +
-                ((availHeight) / 2) +
+                (availHeight / 2) +
                 ')'
             );
 
