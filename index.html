@@ -49,6 +49,84 @@
       return module;
     }();
 
+    var datasetsHelper = function() {
+      var module = {};
+
+      var options = {
+        datasets: {
+          edinburghWeather: {
+            source: 'assets/data/edi-2015.csv',
+            sourceType: 'csv',
+            ready: false
+          }
+        }
+      };
+
+      var loadedDatasets = {};
+      var readyAllCallbacks = [];
+
+      function checkIfAllReadyAndFireCallbacks() {
+        var datasetName, allReady = true, i;
+
+        for (datasetName in options.datasets) {
+          if (options.datasets.hasOwnProperty(datasetName)) {
+            if (!options.datasets[datasetName].ready) {
+              allReady = false;
+              break;
+            }
+          }
+        }
+
+        if (allReady) {
+          for (i = 0; i < readyAllCallbacks.length; i++) {
+            readyAllCallbacks[i]();
+          }
+        }
+      }
+
+      module.readyAllCallback = function(callback) {
+        if (typeof callback === 'function') {
+          readyAllCallbacks.push(callback);
+          return true;
+        }
+
+        return false;
+      };
+
+      module.loadAlDatasets = function() {
+        var datasetName;
+
+        for (datasetName in options.datasets) {
+          if (options.datasets.hasOwnProperty(datasetName)) {
+            (function(dataset, datasetName) {
+              if (dataset.sourceType === 'csv') {
+                d3.csv(
+                    dataset.source,
+                    function(error, rows) {
+                      if (error) {
+                        throw error;
+                      }
+
+                      loadedDatasets[datasetName] = rows;
+
+                      options.datasets[datasetName].ready = true;
+
+                      checkIfAllReadyAndFireCallbacks();
+                    }
+                );
+              } else {
+                console.error('Unknown dataset type `' + dataset.sourceType + '`.');
+              }
+            })(options.datasets[datasetName], datasetName);
+          }
+        }
+      };
+
+      module.data = loadedDatasets;
+
+      return module;
+    }();
+
     var calendarChart = function() {
       var module = {};
 
@@ -202,298 +280,296 @@
       }
 
       module.run = function() {
-        d3.csv('assets/data/edi-2015.csv', function(error, rows) {
-          if (error) {
-            throw error;
-          }
+        data = datasetsHelper.data.edinburghWeather.map(function(d, i) {
+          d.cloud_cover = +d.cloud_cover;
 
-          data = rows.map(function(d, i) {
-            d.cloud_cover = +d.cloud_cover;
-
-            return d;
-          });
-
-          svg = d3.select('#calendar')
-              .attr('width', width)
-              .attr('height', height);
-
-          mainGroup = svg.append('g')
-              .attr('transform', 'translate(' + margins.left + ', ' + margins.top + ')');
-
-          // prepare circle group
-
-          circleGroupRadius = Math.min(availWidth, availHeight) / 2 - options.circleGroupMargin;
-          circleGroup = mainGroup.append('g')
-              .attr(
-                  'transform',
-                  'translate(' +
-                  ((availWidth) / 2) +
-                  ', ' +
-                  ((availHeight) / 2) +
-                  ')'
-              );
-
-          // draw spokes
-
-          spokeGroups = circleGroup.selectAll('g.spoke-group').data(data);
-
-          spokeGroupsEnter = spokeGroups.enter()
-              .append('g')
-              .attr('transform', function(d, i) {
-                return 'rotate(' + (i / options.days * 360) + ')';
-              });
-
-          spokes = spokeGroupsEnter
-              .append('line')
-              .attr('class', 'spoke')
-              .attr('x1', circleGroupRadius - options.spokeLength)
-              .attr('y1', 0)
-              .attr('x2', circleGroupRadius)
-              .attr('y2', 0)
-              .style('stroke-width', options.spokeWidth)
-              .style('stroke', sunshine);
-
-          // draw week lines
-
-          weekLineArc = d3.svg.arc()
-              .innerRadius(circleGroupRadius + options.weekLineOffset)
-              .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekLineWidth)
-              .startAngle(function(d, i) {
-                return (d[0] + 1) / options.days * 2 * Math.PI;
-              })
-              .endAngle(function(d, i) {
-                return ((d[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
-              });
-
-          weekLines = circleGroup.selectAll('path.week-line')
-              .data(weeksData);
-
-          weekLinesEnter = weekLines.enter().append('path')
-              .attr('d', weekLineArc)
-              .style('fill', k.beta);
-
-          // draw month lines
-
-          monthLineArc = d3.svg.arc()
-              .innerRadius(circleGroupRadius + options.monthLineOffset)
-              .outerRadius(circleGroupRadius + options.monthLineOffset + options.monthLineWidth)
-              .startAngle(function(d, i) {
-                return d.from / options.days * 2 * Math.PI;
-              })
-              .endAngle(function(d, i) {
-                return ((d.to - 1) / options.days + options.spokeWidth / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
-              });
-
-          monthLines = circleGroup.selectAll('path.month-line')
-              .data(monthsData);
-
-          monthLinesEnter = monthLines.enter().append('path')
-              .attr('d', monthLineArc)
-              .style('fill', k.gamma)
-              .moveToBack();
-
-          monthLeftWings = circleGroup.selectAll('line.month-left-wing')
-              .data(monthsData);
-
-          monthLeftWingsEnter = monthLeftWings.enter().append('line')
-              .attr('class', 'month-left-wing')
-              .attr('transform', function(d, i) {
-                return 'rotate(' + (d.from / options.days * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
-              })
-              .attr('x1', circleGroupRadius + options.monthLineOffset)
-              .attr('y1', 0)
-              .attr('x2', circleGroupRadius + options.monthLineOffset + options.monthWingWidth)
-              .attr('y2', 0)
-              .style('stroke-width', options.monthLineWidth)
-              .style('stroke', k.gamma);
-
-          monthRightWings = circleGroup.selectAll('line.month-right-wing')
-              .data(monthsData);
-
-          monthRightWingsEnter = monthRightWings.enter().append('line')
-              .attr('class', 'month-right-wing')
-              .attr('transform', function(d, i) {
-                return 'rotate(' + (d.to / options.days * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
-              })
-              .attr('x1', circleGroupRadius + options.monthLineOffset)
-              .attr('y1', 0)
-              .attr('x2', circleGroupRadius + options.monthLineOffset + options.monthWingWidth)
-              .attr('y2', 0)
-              .style('stroke-width', options.monthLineWidth)
-              .style('stroke', k.gamma);
-
-          monthNameGroups = circleGroup.selectAll('text.month-name')
-              .data(monthsData);
-
-          monthNameGroupsEnter = monthNameGroups.enter().append('g')
-              .attr('transform', function(d, i) {
-                return 'rotate(' + ((i + 0.5) / 12 * 360 - 90) + ')';
-              });
-
-          monthNameGroupsEnter.append('text')
-              .attr('class', 'month-name')
-              .attr('transform', function(d, i) {
-                var translateX, rotate;
-
-                translateX = circleGroupRadius + options.monthNameOffset;
-
-                rotate = i > 2 && i < 9 ? 270 : 90;
-
-                return 'translate(' + translateX + ', 0) rotate(' + rotate + ')';
-              })
-              .text(function(d, i) {
-                return utils.monthName(i);
-              });
-
-          // prepare week slice; draw it when hovering over the chart
-          // draw week number label
-
-          weekSliceArc = d3.svg.arc()
-              .innerRadius(options.weekSliceInnerOffset)
-              .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekSliceOuterOffset);
-
-          weekSlice = circleGroup.append('path')
-              .attr('class', 'week-slice')
-              .moveToBack();
-
-          weekNumberLabelGroup = circleGroup.append('g');
-
-          weekNumberLabelText = weekNumberLabelGroup.append('text')
-              .attr('class', 'week-number-label');
-
-          d3.select(document).on('mousemove', function() {
-            var coords, rad, weekData, rotationStartAngle, rotationEndAngle, textLabelRotation;
-
-            coords = d3.mouse(circleGroup.node());
-
-            rad = Math.atan2(coords[0], -coords[1]);
-
-            weekData = dayToWeekData(mapRadiansToDay(rad));
-
-            if (weekData !== null) {
-              rotationStartAngle = (weekData[0] + 1) / options.days * 2 * Math.PI;
-              rotationEndAngle = ((weekData[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
-
-              weekSliceArc
-                  .startAngle(function() {
-                    return rotationStartAngle;
-                  })
-                  .endAngle(function() {
-                    return rotationEndAngle;
-                  });
-
-              weekSlice
-                  .attr('d', weekSliceArc);
-
-              textLabelRotation = (rotationStartAngle + rotationEndAngle) / 2 / (2 * Math.PI) * 360 - 90;
-
-              weekNumberLabelGroup
-                  .attr('transform', 'rotate(' + textLabelRotation + ')');
-
-              weekNumberLabelText
-                  .text('week ' + weekData[2])
-                  .attr('transform', function() {
-                    var translateX, rotate;
-
-                    translateX =
-                        circleGroupRadius +
-                        options.weekLineOffset +
-                        options.weekSliceOuterOffset +
-                        options.weekSliceTextOffset;
-
-                    rotate = textLabelRotation > 0 && textLabelRotation < 180 ? 270 : 90;
-
-                    return 'translate(' + translateX + ', 0) rotate(' + rotate + ')';
-                  });
-            }
-          });
-
-          // controls to choose between Edinburgh and Madrid; locations headline
-
-          locationsGroup = mainGroup.append('g')
-              .attr(
-                  'transform',
-                  'translate(' + (availWidth / 2) + ', ' + (options.locationsOffset) + ')'
-              );
-
-          locationsHeadline = locationsGroup.append('text')
-              .attr('class', 'location-headline')
-              .text('2015 Weather Data for');
-
-          locationsHeadlineBox = locationsHeadline.node().getBBox();
-
-          locationEdinburghCont = locationsGroup.append('g');
-
-          locationEdinburghText = locationEdinburghCont.append('text')
-              .attr('class', 'location')
-              .text('Edinburgh');
-
-          locationEdinburghTextBox = locationEdinburghText.node().getBBox();
-
-          locationEdinburghRectWidth = locationEdinburghTextBox.width + 2 * options.locationTextPadding;
-          locationEdinburghRectHeight = locationEdinburghTextBox.height + 2 * options.locationTextPadding;
-
-          locationEdinburghRect = locationEdinburghCont.append('rect')
-              .attr('class', 'location-box active')
-              .attr('x', -locationEdinburghTextBox.width / 2 - options.locationTextPadding)
-              .attr('y', -locationEdinburghTextBox.height / 2 - options.locationTextPadding)
-              .attr('width', locationEdinburghRectWidth)
-              .attr('height', locationEdinburghRectHeight);
-
-          locationEdinburghRect.moveToBack();
-
-          locationMadridCont = locationsGroup.append('g');
-
-          locationMadridText = locationMadridCont.append('text')
-              .attr('class', 'location')
-              .text('Madrid');
-
-          locationMadridTextBox = locationMadridText.node().getBBox();
-
-          locationMadridRectWidth = locationMadridTextBox.width + 2 * options.locationTextPadding;
-          locationMadridRectHeight = locationMadridTextBox.height + 2 * options.locationTextPadding;
-
-          locationMadridRect = locationMadridCont.append('rect')
-              .attr('class', 'location-box')
-              .attr('x', -locationMadridTextBox.width / 2 - options.locationTextPadding)
-              .attr('y', -locationMadridTextBox.height / 2 - options.locationTextPadding)
-              .attr('width', locationMadridRectWidth)
-              .attr('height', locationMadridRectHeight);
-
-          locationMadridRect.moveToBack();
-
-          locationsTotalWidth =
-              locationsHeadlineBox.width +
-              options.locationsInnerSpace +
-              locationEdinburghRectWidth +
-              options.locationsInnerSpace +
-              locationMadridRectWidth;
-
-          locationsHeadline
-              .attr(
-                  'transform',
-                  'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width / 2) + ', 0)'
-              );
-
-          locationEdinburghCont
-              .attr(
-                  'transform',
-                  'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width + options.locationsInnerSpace + locationEdinburghRectWidth / 2) + ', 0)'
-              );
-
-          locationMadridCont
-              .attr(
-                  'transform',
-                  'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width + options.locationsInnerSpace + locationEdinburghRectWidth +
-                  options.locationsInnerSpace + locationMadridRectWidth / 2) + ', 0)'
-              );
+          return d;
         });
+
+        svg = d3.select('#calendar')
+            .attr('width', width)
+            .attr('height', height);
+
+        mainGroup = svg.append('g')
+            .attr('transform', 'translate(' + margins.left + ', ' + margins.top + ')');
+
+        // prepare circle group
+
+        circleGroupRadius = Math.min(availWidth, availHeight) / 2 - options.circleGroupMargin;
+        circleGroup = mainGroup.append('g')
+            .attr(
+                'transform',
+                'translate(' +
+                ((availWidth) / 2) +
+                ', ' +
+                ((availHeight) / 2) +
+                ')'
+            );
+
+        // draw spokes
+
+        spokeGroups = circleGroup.selectAll('g.spoke-group').data(data);
+
+        spokeGroupsEnter = spokeGroups.enter()
+            .append('g')
+            .attr('transform', function(d, i) {
+              return 'rotate(' + (i / options.days * 360) + ')';
+            });
+
+        spokes = spokeGroupsEnter
+            .append('line')
+            .attr('class', 'spoke')
+            .attr('x1', circleGroupRadius - options.spokeLength)
+            .attr('y1', 0)
+            .attr('x2', circleGroupRadius)
+            .attr('y2', 0)
+            .style('stroke-width', options.spokeWidth)
+            .style('stroke', sunshine);
+
+        // draw week lines
+
+        weekLineArc = d3.svg.arc()
+            .innerRadius(circleGroupRadius + options.weekLineOffset)
+            .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekLineWidth)
+            .startAngle(function(d, i) {
+              return (d[0] + 1) / options.days * 2 * Math.PI;
+            })
+            .endAngle(function(d, i) {
+              return ((d[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+            });
+
+        weekLines = circleGroup.selectAll('path.week-line')
+            .data(weeksData);
+
+        weekLinesEnter = weekLines.enter().append('path')
+            .attr('d', weekLineArc)
+            .style('fill', k.beta);
+
+        // draw month lines
+
+        monthLineArc = d3.svg.arc()
+            .innerRadius(circleGroupRadius + options.monthLineOffset)
+            .outerRadius(circleGroupRadius + options.monthLineOffset + options.monthLineWidth)
+            .startAngle(function(d, i) {
+              return d.from / options.days * 2 * Math.PI;
+            })
+            .endAngle(function(d, i) {
+              return ((d.to - 1) / options.days + options.spokeWidth / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+            });
+
+        monthLines = circleGroup.selectAll('path.month-line')
+            .data(monthsData);
+
+        monthLinesEnter = monthLines.enter().append('path')
+            .attr('d', monthLineArc)
+            .style('fill', k.gamma)
+            .moveToBack();
+
+        monthLeftWings = circleGroup.selectAll('line.month-left-wing')
+            .data(monthsData);
+
+        monthLeftWingsEnter = monthLeftWings.enter().append('line')
+            .attr('class', 'month-left-wing')
+            .attr('transform', function(d, i) {
+              return 'rotate(' + (d.from / options.days * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
+            })
+            .attr('x1', circleGroupRadius + options.monthLineOffset)
+            .attr('y1', 0)
+            .attr('x2', circleGroupRadius + options.monthLineOffset + options.monthWingWidth)
+            .attr('y2', 0)
+            .style('stroke-width', options.monthLineWidth)
+            .style('stroke', k.gamma);
+
+        monthRightWings = circleGroup.selectAll('line.month-right-wing')
+            .data(monthsData);
+
+        monthRightWingsEnter = monthRightWings.enter().append('line')
+            .attr('class', 'month-right-wing')
+            .attr('transform', function(d, i) {
+              return 'rotate(' + (d.to / options.days * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
+            })
+            .attr('x1', circleGroupRadius + options.monthLineOffset)
+            .attr('y1', 0)
+            .attr('x2', circleGroupRadius + options.monthLineOffset + options.monthWingWidth)
+            .attr('y2', 0)
+            .style('stroke-width', options.monthLineWidth)
+            .style('stroke', k.gamma);
+
+        monthNameGroups = circleGroup.selectAll('text.month-name')
+            .data(monthsData);
+
+        monthNameGroupsEnter = monthNameGroups.enter().append('g')
+            .attr('transform', function(d, i) {
+              return 'rotate(' + ((i + 0.5) / 12 * 360 - 90) + ')';
+            });
+
+        monthNameGroupsEnter.append('text')
+            .attr('class', 'month-name')
+            .attr('transform', function(d, i) {
+              var translateX, rotate;
+
+              translateX = circleGroupRadius + options.monthNameOffset;
+
+              rotate = i > 2 && i < 9 ? 270 : 90;
+
+              return 'translate(' + translateX + ', 0) rotate(' + rotate + ')';
+            })
+            .text(function(d, i) {
+              return utils.monthName(i);
+            });
+
+        // prepare week slice; draw it when hovering over the chart
+        // draw week number label
+
+        weekSliceArc = d3.svg.arc()
+            .innerRadius(options.weekSliceInnerOffset)
+            .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekSliceOuterOffset);
+
+        weekSlice = circleGroup.append('path')
+            .attr('class', 'week-slice')
+            .moveToBack();
+
+        weekNumberLabelGroup = circleGroup.append('g');
+
+        weekNumberLabelText = weekNumberLabelGroup.append('text')
+            .attr('class', 'week-number-label');
+
+        d3.select(document).on('mousemove', function() {
+          var coords, rad, weekData, rotationStartAngle, rotationEndAngle, textLabelRotation;
+
+          coords = d3.mouse(circleGroup.node());
+
+          rad = Math.atan2(coords[0], -coords[1]);
+
+          weekData = dayToWeekData(mapRadiansToDay(rad));
+
+          if (weekData !== null) {
+            rotationStartAngle = (weekData[0] + 1) / options.days * 2 * Math.PI;
+            rotationEndAngle = ((weekData[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+
+            weekSliceArc
+                .startAngle(function() {
+                  return rotationStartAngle;
+                })
+                .endAngle(function() {
+                  return rotationEndAngle;
+                });
+
+            weekSlice
+                .attr('d', weekSliceArc);
+
+            textLabelRotation = (rotationStartAngle + rotationEndAngle) / 2 / (2 * Math.PI) * 360 - 90;
+
+            weekNumberLabelGroup
+                .attr('transform', 'rotate(' + textLabelRotation + ')');
+
+            weekNumberLabelText
+                .text('week ' + weekData[2])
+                .attr('transform', function() {
+                  var translateX, rotate;
+
+                  translateX =
+                      circleGroupRadius +
+                      options.weekLineOffset +
+                      options.weekSliceOuterOffset +
+                      options.weekSliceTextOffset;
+
+                  rotate = textLabelRotation > 0 && textLabelRotation < 180 ? 270 : 90;
+
+                  return 'translate(' + translateX + ', 0) rotate(' + rotate + ')';
+                });
+          }
+        });
+
+        // controls to choose between Edinburgh and Madrid; locations headline
+
+        locationsGroup = mainGroup.append('g')
+            .attr(
+                'transform',
+                'translate(' + (availWidth / 2) + ', ' + (options.locationsOffset) + ')'
+            );
+
+        locationsHeadline = locationsGroup.append('text')
+            .attr('class', 'location-headline')
+            .text('2015 Weather Data for');
+
+        locationsHeadlineBox = locationsHeadline.node().getBBox();
+
+        locationEdinburghCont = locationsGroup.append('g');
+
+        locationEdinburghText = locationEdinburghCont.append('text')
+            .attr('class', 'location')
+            .text('Edinburgh');
+
+        locationEdinburghTextBox = locationEdinburghText.node().getBBox();
+
+        locationEdinburghRectWidth = locationEdinburghTextBox.width + 2 * options.locationTextPadding;
+        locationEdinburghRectHeight = locationEdinburghTextBox.height + 2 * options.locationTextPadding;
+
+        locationEdinburghRect = locationEdinburghCont.append('rect')
+            .attr('class', 'location-box active')
+            .attr('x', -locationEdinburghTextBox.width / 2 - options.locationTextPadding)
+            .attr('y', -locationEdinburghTextBox.height / 2 - options.locationTextPadding)
+            .attr('width', locationEdinburghRectWidth)
+            .attr('height', locationEdinburghRectHeight);
+
+        locationEdinburghRect.moveToBack();
+
+        locationMadridCont = locationsGroup.append('g');
+
+        locationMadridText = locationMadridCont.append('text')
+            .attr('class', 'location')
+            .text('Madrid');
+
+        locationMadridTextBox = locationMadridText.node().getBBox();
+
+        locationMadridRectWidth = locationMadridTextBox.width + 2 * options.locationTextPadding;
+        locationMadridRectHeight = locationMadridTextBox.height + 2 * options.locationTextPadding;
+
+        locationMadridRect = locationMadridCont.append('rect')
+            .attr('class', 'location-box')
+            .attr('x', -locationMadridTextBox.width / 2 - options.locationTextPadding)
+            .attr('y', -locationMadridTextBox.height / 2 - options.locationTextPadding)
+            .attr('width', locationMadridRectWidth)
+            .attr('height', locationMadridRectHeight);
+
+        locationMadridRect.moveToBack();
+
+        locationsTotalWidth =
+            locationsHeadlineBox.width +
+            options.locationsInnerSpace +
+            locationEdinburghRectWidth +
+            options.locationsInnerSpace +
+            locationMadridRectWidth;
+
+        locationsHeadline
+            .attr(
+                'transform',
+                'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width / 2) + ', 0)'
+            );
+
+        locationEdinburghCont
+            .attr(
+                'transform',
+                'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width + options.locationsInnerSpace + locationEdinburghRectWidth / 2) + ', 0)'
+            );
+
+        locationMadridCont
+            .attr(
+                'transform',
+                'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width + options.locationsInnerSpace + locationEdinburghRectWidth +
+                options.locationsInnerSpace + locationMadridRectWidth / 2) + ', 0)'
+            );
       };
 
       return module;
     }();
 
-    calendarChart.run();
+    datasetsHelper.loadAlDatasets();
+
+    datasetsHelper.readyAllCallback(function() {
+      calendarChart.run();
+    });
   </script>
 </body>
 </html>
