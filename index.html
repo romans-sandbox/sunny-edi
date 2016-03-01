@@ -53,11 +53,11 @@
       var module = {};
 
       var width = 500;
-      var height = 500;
+      var height = 550;
       var margins = {
-        top: 0,
+        top: 70,
         right: 0,
-        bottom: 0,
+        bottom: 10,
         left: 0
       };
 
@@ -75,7 +75,10 @@
         monthNameOffset: 18,
         weekSliceInnerOffset: 150,
         weekSliceOuterOffset: 25,
-        weekSliceTextOffset: 5
+        weekSliceTextOffset: 5,
+        locationsOffset: -30,
+        locationsInnerSpace: 10,
+        locationTextPadding: 5
       };
 
       var availWidth = width - margins.left - margins.right;
@@ -156,6 +159,11 @@
       var monthNameGroups, monthNameGroupsEnter;
       var weekSlice, weekSliceArc;
       var weekNumberLabelGroup, weekNumberLabelText;
+      var locationsGroup, locationsTotalWidth, locationsHeadline, locationsHeadlineBox;
+      var locationEdinburghCont, locationEdinburghRect, locationEdinburghText;
+      var locationEdinburghTextBox, locationEdinburghRectWidth, locationEdinburghRectHeight;
+      var locationMadridCont, locationMadridRect, locationMadridText;
+      var locationMadridTextBox, locationMadridRectWidth, locationMadridRectHeight;
 
       function sunshine(d, i) {
         if (d.weather_desc === 'Sunny') {
@@ -219,9 +227,9 @@
               .attr(
                   'transform',
                   'translate(' +
-                  (circleGroupRadius + options.circleGroupMargin) +
+                  ((availWidth) / 2) +
                   ', ' +
-                  (circleGroupRadius + options.circleGroupMargin) +
+                  ((availHeight) / 2) +
                   ')'
               );
 
@@ -399,6 +407,86 @@
                   });
             }
           });
+
+          // controls to choose between Edinburgh and Madrid; locations headline
+
+          locationsGroup = mainGroup.append('g')
+              .attr(
+                  'transform',
+                  'translate(' + (availWidth / 2) + ', ' + (options.locationsOffset) + ')'
+              );
+
+          locationsHeadline = locationsGroup.append('text')
+              .attr('class', 'location-headline')
+              .text('2015 Weather Data for');
+
+          locationsHeadlineBox = locationsHeadline.node().getBBox();
+
+          locationEdinburghCont = locationsGroup.append('g');
+
+          locationEdinburghText = locationEdinburghCont.append('text')
+              .attr('class', 'location')
+              .text('Edinburgh');
+
+          locationEdinburghTextBox = locationEdinburghText.node().getBBox();
+
+          locationEdinburghRectWidth = locationEdinburghTextBox.width + 2 * options.locationTextPadding;
+          locationEdinburghRectHeight = locationEdinburghTextBox.height + 2 * options.locationTextPadding;
+
+          locationEdinburghRect = locationEdinburghCont.append('rect')
+              .attr('class', 'location-box active')
+              .attr('x', -locationEdinburghTextBox.width / 2 - options.locationTextPadding)
+              .attr('y', -locationEdinburghTextBox.height / 2 - options.locationTextPadding)
+              .attr('width', locationEdinburghRectWidth)
+              .attr('height', locationEdinburghRectHeight);
+
+          locationEdinburghRect.moveToBack();
+
+          locationMadridCont = locationsGroup.append('g');
+
+          locationMadridText = locationMadridCont.append('text')
+              .attr('class', 'location')
+              .text('Madrid');
+
+          locationMadridTextBox = locationMadridText.node().getBBox();
+
+          locationMadridRectWidth = locationMadridTextBox.width + 2 * options.locationTextPadding;
+          locationMadridRectHeight = locationMadridTextBox.height + 2 * options.locationTextPadding;
+
+          locationMadridRect = locationMadridCont.append('rect')
+              .attr('class', 'location-box')
+              .attr('x', -locationMadridTextBox.width / 2 - options.locationTextPadding)
+              .attr('y', -locationMadridTextBox.height / 2 - options.locationTextPadding)
+              .attr('width', locationMadridRectWidth)
+              .attr('height', locationMadridRectHeight);
+
+          locationMadridRect.moveToBack();
+
+          locationsTotalWidth =
+              locationsHeadlineBox.width +
+              options.locationsInnerSpace +
+              locationEdinburghRectWidth +
+              options.locationsInnerSpace +
+              locationMadridRectWidth;
+
+          locationsHeadline
+              .attr(
+                  'transform',
+                  'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width / 2) + ', 0)'
+              );
+
+          locationEdinburghCont
+              .attr(
+                  'transform',
+                  'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width + options.locationsInnerSpace + locationEdinburghRectWidth / 2) + ', 0)'
+              );
+
+          locationMadridCont
+              .attr(
+                  'transform',
+                  'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width + options.locationsInnerSpace + locationEdinburghRectWidth +
+                  options.locationsInnerSpace + locationMadridRectWidth / 2) + ', 0)'
+              );
         });
       };
 

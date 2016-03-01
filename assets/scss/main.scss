@@ -11,7 +11,6 @@ body {
 }
 
 div.calendar-container {
-  margin-top: 30px;
   text-align: center;
 }
 
@@ -33,6 +32,31 @@ svg.calendar {
 
   text.week-number-label {
     font-size: 0.6em;
+    text-anchor: middle;
+    dominant-baseline: central;
+    fill: $beta;
+  }
+
+  text.location {
+    pointer-events: none;
+    font-size: 1.2em;
+    text-anchor: middle;
+    dominant-baseline: central;
+    fill: $beta;
+  }
+
+  rect.location-box {
+    fill: transparent;
+    stroke: $beta;
+    stroke-width: 1px;
+
+    &.active {
+      fill: $epsilon;
+    }
+  }
+
+  text.location-headline {
+    font-size: 1.2em;
     text-anchor: middle;
     dominant-baseline: central;
     fill: $beta;
