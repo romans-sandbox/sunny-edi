@@ -10,8 +10,58 @@ body {
   font: 16px 'Helvetica Neue', Helvetica, sans-serif;
 }
 
+div.main-container {
+  overflow: hidden;
+}
+
+div.content-container {
+  float: left;
+  margin-right: -600px;
+  padding-left: 30px;
+  padding-top: 20px;
+}
+
+div.location-controls {
+  margin-top: 30px;
+}
+
+div.location-control {
+  display: inline-block;
+  cursor: default;
+  padding-bottom: 1px;
+  border-bottom: 3px solid transparent;
+
+  &:not(:last-child) {
+    margin-right: 10px;
+  }
+
+  &.active {
+    border-color: $gamma;
+  }
+}
+
+div.weather-controls {
+  margin-top: 30px;
+}
+
+div.weather-control {
+  display: inline-block;
+  cursor: default;
+  padding-bottom: 1px;
+  border-bottom: 3px solid transparent;
+
+  &:not(:last-child) {
+    margin-right: 10px;
+  }
+
+  &.active {
+    border-color: $gamma;
+  }
+}
+
 div.calendar-container {
-  text-align: center;
+  float: right;
+  width: 600px;
 }
 
 svg.calendar {

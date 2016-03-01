@@ -6,8 +6,19 @@
   <link rel="stylesheet" href="assets/scss/main.css">
 </head>
 <body>
-  <div class="calendar-container">
-    <svg id="calendar" class="calendar"></svg>
+  <div class="main-container">
+    <div class="content-container">
+      <h1>Sunny Edinburgh Project</h1>
+      <div class="location-controls">
+        <div class="location-control" data-location="edinburgh">Edinburgh</div><div class="location-control" data-location="madrid">Madrid</div>
+      </div>
+      <div class="weather-controls">
+        <div class="weather-control" data-weather="sunny">Sunny Days</div><div class="weather-control" data-weather="rainy">Rainy Days</div><div class="weather-control" data-weather="windy">Windy Days</div>
+      </div>
+    </div>
+    <div class="calendar-container">
+      <svg id="calendar" class="calendar"></svg>
+    </div>
   </div>
   <script src="node_modules/d3/d3.min.js"></script>
   <script>
@@ -135,20 +146,19 @@
     var calendarChart = function() {
       var module = {};
 
-      var width = window.innerWidth;
+      var width = 600;
       var height = 600;
       var margins = {
-        top: 20,
-        right: 0,
-        bottom: 0,
-        left: 0
+        top: 10,
+        right: 10,
+        bottom: 10,
+        left: 10
       };
 
       var options = {
         days: 365,
         firstDayOffset: 4,
         circleGroupMargin: 40,
-        circleGroupMargin2: 50,
         spokeWidth: 3,
         spokeLength: 20,
         weekLineOffset: 5,
@@ -159,10 +169,7 @@
         monthNameOffset: 18,
         weekSliceInnerOffset: 150,
         weekSliceOuterOffset: 25,
-        weekSliceTextOffset: 5,
-        locationsOffset: 50,
-        locationsInnerSpace: 10,
-        locationTextPadding: 5
+        weekSliceTextOffset: 5
       };
 
       var availWidth = width - margins.left - margins.right;
@@ -243,11 +250,6 @@
       var monthNameGroups, monthNameGroupsEnter;
       var weekSlice, weekSliceArc;
       var weekNumberLabelGroup, weekNumberLabelText;
-      var locationsGroup, locationsTotalWidth, locationsHeadline, locationsHeadlineBox;
-      var locationEdinburghCont, locationEdinburghRect, locationEdinburghText;
-      var locationEdinburghTextBox, locationEdinburghRectWidth, locationEdinburghRectHeight;
-      var locationMadridCont, locationMadridRect, locationMadridText;
-      var locationMadridTextBox, locationMadridRectWidth, locationMadridRectHeight;
 
       function sunshine(d, i) {
         if (d.weather_desc === 'Sunny') {
@@ -311,38 +313,6 @@
             .style('stroke', sunshine);
       }
 
-      function setEdinburghLocation() {
-        data = datasetsHelper.data.edinburghWeather.map(function(d, i) {
-          d.cloud_cover = +d.cloud_cover;
-
-          return d;
-        });
-
-        locationEdinburghRect
-            .attr('class', 'location-box active');
-
-        locationMadridRect
-            .attr('class', 'location-box');
-
-        updateSpokes();
-      }
-
-      function setMadridLocation() {
-        data = datasetsHelper.data.madridWeather.map(function(d, i) {
-          d.cloud_cover = +d.cloud_cover;
-
-          return d;
-        });
-
-        locationEdinburghRect
-            .attr('class', 'location-box');
-
-        locationMadridRect
-            .attr('class', 'location-box active');
-
-        updateSpokes();
-      }
-
       module.run = function() {
         data = datasetsHelper.data.edinburghWeather.map(function(d, i) {
           d.cloud_cover = +d.cloud_cover;
@@ -364,7 +334,7 @@
             .attr(
                 'transform',
                 'translate(' +
-                (availWidth - circleGroupRadius - options.circleGroupMargin - options.circleGroupMargin2) +
+                (availWidth / 2) +
                 ', ' +
                 (availHeight / 2) +
                 ')'
@@ -529,96 +499,71 @@
           }
         });
 
-        // controls to choose between Edinburgh and Madrid; locations headline
+        // everything's ready by now
+        
+        module.ready = true;
+      };
 
-        locationsGroup = mainGroup.append('g');
+      module.setLocationEdinburgh = function() {
+        data = datasetsHelper.data.edinburghWeather.map(function(d, i) {
+          d.cloud_cover = +d.cloud_cover;
 
-        locationsHeadline = locationsGroup.append('text')
-            .attr('class', 'location-headline')
-            .text('2015 Weather Data for');
+          return d;
+        });
 
-        locationsHeadlineBox = locationsHeadline.node().getBBox();
+        updateSpokes();
+      };
 
-        locationEdinburghCont = locationsGroup.append('g');
+      module.setLocationMadrid = function() {
+        data = datasetsHelper.data.madridWeather.map(function(d, i) {
+          d.cloud_cover = +d.cloud_cover;
 
-        locationEdinburghText = locationEdinburghCont.append('text')
-            .attr('class', 'location')
-            .text('Edinburgh');
+          return d;
+        });
 
-        locationEdinburghTextBox = locationEdinburghText.node().getBBox();
+        updateSpokes();
+      };
+      
+      module.ready = false;
 
-        locationEdinburghRectWidth = locationEdinburghTextBox.width + 2 * options.locationTextPadding;
-        locationEdinburghRectHeight = locationEdinburghTextBox.height + 2 * options.locationTextPadding;
+      return module;
+    }();
+    
+    var calendarControls = function() {
+      var module = {};
 
-        locationEdinburghRect = locationEdinburghCont.append('rect')
-            .attr('class', 'location-box')
-            .attr('x', -locationEdinburghTextBox.width / 2 - options.locationTextPadding)
-            .attr('y', -locationEdinburghTextBox.height / 2 - options.locationTextPadding)
-            .attr('width', locationEdinburghRectWidth)
-            .attr('height', locationEdinburghRectHeight);
+      // cached queries
+      var v = {};
 
-        locationEdinburghRect.moveToBack();
+      v.locationEdinburghButton = document.querySelector('[data-location="edinburgh"]');
+      v.locationMadridButton = document.querySelector('[data-location="madrid"]');
+      v.weatherSunnyButton = document.querySelector('[data-weather="sunny"]');
+      v.weatherRainyButton = document.querySelector('[data-weather="rainy"]');
+      v.weatherWindyButton = document.querySelector('[data-weather="windy"]');
+      
+      function deactivateLocation() {
+        v.locationEdinburghButton.classList.remove('active');
+        v.locationMadridButton.classList.remove('active');
+      }
 
-        locationMadridCont = locationsGroup.append('g');
+      module.initLocationButtons = function() {
+        v.locationEdinburghButton.addEventListener('click', function() {
+          if (calendarChart.ready) {
+            deactivateLocation();
+            v.locationEdinburghButton.classList.add('active');
+            calendarChart.setLocationEdinburgh();
+          }
+        }, false);
 
-        locationMadridText = locationMadridCont.append('text')
-            .attr('class', 'location')
-            .text('Madrid');
+        v.locationMadridButton.addEventListener('click', function() {
+          if (calendarChart.ready) {
+            deactivateLocation();
+            v.locationMadridButton.classList.add('active');
+            calendarChart.setLocationMadrid();
+          }
+        }, false);
 
-        locationMadridTextBox = locationMadridText.node().getBBox();
-
-        locationMadridRectWidth = locationMadridTextBox.width + 2 * options.locationTextPadding;
-        locationMadridRectHeight = locationMadridTextBox.height + 2 * options.locationTextPadding;
-
-        locationMadridRect = locationMadridCont.append('rect')
-            .attr('class', 'location-box')
-            .attr('x', -locationMadridTextBox.width / 2 - options.locationTextPadding)
-            .attr('y', -locationMadridTextBox.height / 2 - options.locationTextPadding)
-            .attr('width', locationMadridRectWidth)
-            .attr('height', locationMadridRectHeight);
-
-        locationMadridRect.moveToBack();
-
-        locationsTotalWidth =
-            locationsHeadlineBox.width +
-            options.locationsInnerSpace +
-            locationEdinburghRectWidth +
-            options.locationsInnerSpace +
-            locationMadridRectWidth;
-
-        locationsHeadline
-            .attr(
-                'transform',
-                'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width / 2) + ', 0)'
-            );
-
-        locationEdinburghCont
-            .attr(
-                'transform',
-                'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width + options.locationsInnerSpace + locationEdinburghRectWidth / 2) + ', 0)'
-            );
-
-        locationMadridCont
-            .attr(
-                'transform',
-                'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width + options.locationsInnerSpace + locationEdinburghRectWidth +
-                options.locationsInnerSpace + locationMadridRectWidth / 2) + ', 0)'
-            );
-
-        locationsGroup
-            .attr(
-                'transform',
-                'translate(' + (locationsTotalWidth / 2 + options.locationsOffset) + ', ' + (options.locationsOffset) + ')'
-            );
-
-        // switch between locations; default is Edinburgh
-
-        locationEdinburghRect
-            .attr('class', 'location-box active')
-            .on('click', setEdinburghLocation);
-
-        locationMadridRect
-            .on('click', setMadridLocation);
+        v.locationEdinburghButton.classList.add('active');
       };
 
       return module;
@@ -628,6 +573,7 @@
 
     datasetsHelper.readyAllCallback(function() {
       calendarChart.run();
+      calendarControls.initLocationButtons();
     });
   </script>
 </body>
