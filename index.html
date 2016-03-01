@@ -44,7 +44,8 @@
       gamma: '#aaa',
       delta: '#fcff6c',
       epsilon: '#fff5b2',
-      zeta: '#ccc'
+      zeta: '#ccc',
+      eta: '#8fa8f6'
     };
 
     var utils = function() {
@@ -160,7 +161,8 @@
         firstDayOffset: 4,
         circleGroupMargin: 40,
         spokeWidth: 3,
-        spokeLength: 20,
+        spokeSunnyLength: 20,
+        spokeRainyMaxLength: 60,
         weekLineOffset: 5,
         weekLineWidth: 1,
         monthLineOffset: 8,
@@ -169,13 +171,16 @@
         monthNameOffset: 18,
         weekSliceInnerOffset: 150,
         weekSliceOuterOffset: 25,
-        weekSliceTextOffset: 5
+        weekSliceTextOffset: 5,
+        durations: {
+          spokeMorph: 500
+        }
       };
 
       var availWidth = width - margins.left - margins.right;
       var availHeight = height - margins.top - margins.bottom;
 
-      var data;
+      var data, precipitationMax = 0;
 
       // weeks data
       var weeksData = function() {
@@ -251,6 +256,9 @@
       var weekSlice, weekSliceArc;
       var weekNumberLabelGroup, weekNumberLabelText;
 
+      var precipitation = d3.scale.linear()
+          .range([1, options.spokeRainyMaxLength]);
+
       function sunshine(d, i) {
         if (d.weather_desc === 'Sunny') {
           return k.delta;
@@ -287,6 +295,70 @@
         return null;
       }
 
+      function prepareWeatherEdinburghData() {
+        data = datasetsHelper.data.edinburghWeather.map(function(d, i) {
+          d.cloud_cover = +d.cloud_cover;
+          d.precip_mm = +d.precip_mm;
+
+          return d;
+        });
+
+        setPrecipitationDomain();
+      }
+
+      function prepareWeatherMadridData() {
+        data = datasetsHelper.data.madridWeather.map(function(d, i) {
+          d.cloud_cover = +d.cloud_cover;
+          d.precip_mm = +d.precip_mm;
+
+          return d;
+        });
+
+        setPrecipitationDomain();
+      }
+
+      function findMaxPrecipitationAllLocations() {
+        precipitationMax = Math.max(
+            d3.max(datasetsHelper.data.edinburghWeather, function(d, i) {
+              return +d.precip_mm;
+            }),
+            d3.max(datasetsHelper.data.madridWeather, function(d, i) {
+              return +d.precip_mm;
+            })
+        );
+      }
+
+      function setPrecipitationDomain() {
+        precipitation
+            .domain([0, precipitationMax]);
+      }
+
+      function init() {
+        svg = d3.select('#calendar')
+            .attr('width', width)
+            .attr('height', height);
+
+        mainGroup = svg.append('g')
+            .attr('transform', 'translate(' + margins.left + ', ' + margins.top + ')');
+
+        findMaxPrecipitationAllLocations();
+        prepareWeatherEdinburghData();
+        setPrecipitationDomain();
+      }
+
+      function prepareCircleGroup() {
+        circleGroupRadius = Math.min(availWidth, availHeight) / 2 - options.circleGroupMargin;
+        circleGroup = mainGroup.append('g')
+            .attr(
+                'transform',
+                'translate(' +
+                (availWidth / 2) +
+                ', ' +
+                (availHeight / 2) +
+                ')'
+            );
+      }
+
       function drawSpokes() {
         spokeGroups = circleGroup.selectAll('g.spoke-group').data(data);
 
@@ -299,7 +371,7 @@
         spokes = spokeGroupsEnter
             .append('line')
             .attr('class', 'spoke')
-            .attr('x1', circleGroupRadius - options.spokeLength)
+            .attr('x1', circleGroupRadius - options.spokeSunnyLength)
             .attr('y1', 0)
             .attr('x2', circleGroupRadius)
             .attr('y2', 0)
@@ -307,45 +379,27 @@
             .style('stroke', sunshine);
       }
 
-      function updateSpokes() {
+      function updateSpokesSunny() {
         spokes
             .data(data)
+            .transition()
+            .duration(options.durations.spokeMorph)
+            .attr('x1', circleGroupRadius - options.spokeSunnyLength)
             .style('stroke', sunshine);
       }
 
-      module.run = function() {
-        data = datasetsHelper.data.edinburghWeather.map(function(d, i) {
-          d.cloud_cover = +d.cloud_cover;
+      function updateSpokesRainy() {
+        spokes
+            .data(data)
+            .transition()
+            .duration(options.durations.spokeMorph)
+            .attr('x1', function(d, i) {
+              return circleGroupRadius - precipitation(d.precip_mm);
+            })
+            .style('stroke', k.eta);
+      }
 
-          return d;
-        });
-
-        svg = d3.select('#calendar')
-            .attr('width', width)
-            .attr('height', height);
-
-        mainGroup = svg.append('g')
-            .attr('transform', 'translate(' + margins.left + ', ' + margins.top + ')');
-
-        // prepare circle group
-
-        circleGroupRadius = Math.min(availWidth, availHeight) / 2 - options.circleGroupMargin;
-        circleGroup = mainGroup.append('g')
-            .attr(
-                'transform',
-                'translate(' +
-                (availWidth / 2) +
-                ', ' +
-                (availHeight / 2) +
-                ')'
-            );
-
-        // draw spokes
-
-        drawSpokes();
-
-        // draw week lines
-
+      function drawWeekLines() {
         weekLineArc = d3.svg.arc()
             .innerRadius(circleGroupRadius + options.weekLineOffset)
             .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekLineWidth)
@@ -362,9 +416,9 @@
         weekLinesEnter = weekLines.enter().append('path')
             .attr('d', weekLineArc)
             .style('fill', k.beta);
+      }
 
-        // draw month lines
-
+      function drawMonthLines() {
         monthLineArc = d3.svg.arc()
             .innerRadius(circleGroupRadius + options.monthLineOffset)
             .outerRadius(circleGroupRadius + options.monthLineOffset + options.monthLineWidth)
@@ -435,10 +489,9 @@
             .text(function(d, i) {
               return utils.monthName(i);
             });
+      }
 
-        // prepare week slice; draw it when hovering over the chart
-        // draw week number label
-
+      function prepareWeekSlice() {
         weekSliceArc = d3.svg.arc()
             .innerRadius(options.weekSliceInnerOffset)
             .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekSliceOuterOffset);
@@ -498,6 +551,32 @@
                 });
           }
         });
+      }
+
+      module.run = function() {
+        init();
+
+        // prepare circle group
+
+        prepareCircleGroup();
+
+        // draw spokes
+
+        drawSpokes();
+        updateSpokesSunny();
+
+        // draw week lines
+
+        drawWeekLines();
+
+        // draw month lines
+
+        drawMonthLines();
+
+        // prepare week slice; draw it when hovering over the chart
+        // draw week number label
+
+        prepareWeekSlice();
 
         // everything's ready by now
         
@@ -505,23 +584,41 @@
       };
 
       module.setLocationEdinburgh = function() {
-        data = datasetsHelper.data.edinburghWeather.map(function(d, i) {
-          d.cloud_cover = +d.cloud_cover;
+        var activeWeather;
 
-          return d;
-        });
+        prepareWeatherEdinburghData();
 
-        updateSpokes();
+        activeWeather = calendarControls.getActiveWeather();
+
+        if (activeWeather === 'sunny') {
+          updateSpokesSunny();
+        }
+
+        if (activeWeather === 'rainy') {
+          updateSpokesRainy();
+        }
       };
 
       module.setLocationMadrid = function() {
-        data = datasetsHelper.data.madridWeather.map(function(d, i) {
-          d.cloud_cover = +d.cloud_cover;
+        prepareWeatherMadridData();
 
-          return d;
-        });
+        activeWeather = calendarControls.getActiveWeather();
 
-        updateSpokes();
+        if (activeWeather === 'sunny') {
+          updateSpokesSunny();
+        }
+
+        if (activeWeather === 'rainy') {
+          updateSpokesRainy();
+        }
+      };
+
+      module.setWeatherSunny = function() {
+        updateSpokesSunny();
+      };
+
+      module.setWeatherRainy = function() {
+        updateSpokesRainy();
       };
       
       module.ready = false;
@@ -535,15 +632,23 @@
       // cached queries
       var v = {};
 
+      var activeWeather = 'sunny';
+
       v.locationEdinburghButton = document.querySelector('[data-location="edinburgh"]');
       v.locationMadridButton = document.querySelector('[data-location="madrid"]');
       v.weatherSunnyButton = document.querySelector('[data-weather="sunny"]');
       v.weatherRainyButton = document.querySelector('[data-weather="rainy"]');
       v.weatherWindyButton = document.querySelector('[data-weather="windy"]');
-      
+
       function deactivateLocation() {
         v.locationEdinburghButton.classList.remove('active');
         v.locationMadridButton.classList.remove('active');
+      }
+
+      function deactivateWeather() {
+        v.weatherSunnyButton.classList.remove('active');
+        v.weatherRainyButton.classList.remove('active');
+        v.weatherWindyButton.classList.remove('active');
       }
 
       module.initLocationButtons = function() {
@@ -566,6 +671,42 @@
         v.locationEdinburghButton.classList.add('active');
       };
 
+      module.initWeatherButtons = function() {
+        v.weatherSunnyButton.addEventListener('click', function() {
+          if (calendarChart.ready) {
+            deactivateWeather();
+            activeWeather = 'sunny';
+            v.weatherSunnyButton.classList.add('active');
+            calendarChart.setWeatherSunny();
+          }
+        }, false);
+
+        v.weatherRainyButton.addEventListener('click', function() {
+          if (calendarChart.ready) {
+            deactivateWeather();
+            activeWeather = 'rainy';
+            v.weatherRainyButton.classList.add('active');
+            calendarChart.setWeatherRainy();
+          }
+        }, false);
+
+        v.weatherWindyButton.addEventListener('click', function() {
+          alert('under development');
+
+          /*if (calendarChart.ready) {
+            deactivateWeather();
+            v.weatherWindyButton.classList.add('active');
+            // calendarChart.setWeatherWindy();
+          }*/
+        }, false);
+
+        v.weatherSunnyButton.classList.add('active');
+      };
+
+      module.getActiveWeather = function() {
+        return activeWeather;
+      };
+
       return module;
     }();
 
@@ -574,6 +715,7 @@
     datasetsHelper.readyAllCallback(function() {
       calendarChart.run();
       calendarControls.initLocationButtons();
+      calendarControls.initWeatherButtons();
     });
   </script>
 </body>
