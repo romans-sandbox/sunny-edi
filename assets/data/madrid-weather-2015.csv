@@ -1,0 +1,366 @@
+date,cloud_cover,weather_desc
+2015-04-01,5,Sunny
+2015-04-02,12,Sunny
+2015-04-03,10,Sunny
+2015-04-04,0,Sunny
+2015-04-05,0,Sunny
+2015-04-06,23,Sunny
+2015-04-07,9,Sunny
+2015-04-08,16,Sunny
+2015-04-09,100,"Moderate rain"
+2015-04-10,41,"Partly Cloudy"
+2015-04-11,20,Sunny
+2015-04-12,19,Sunny
+2015-04-13,7,Sunny
+2015-04-14,100,Overcast
+2015-04-15,22,Sunny
+2015-04-16,60,"Light rain shower"
+2015-04-17,44,"Partly Cloudy"
+2015-04-18,9,Sunny
+2015-04-19,9,Sunny
+2015-04-20,7,Sunny
+2015-04-21,13,Sunny
+2015-04-22,32,"Partly Cloudy"
+2015-04-23,10,Sunny
+2015-04-24,89,Overcast
+2015-04-25,53,"Partly Cloudy"
+2015-04-26,100,"Light rain"
+2015-04-27,21,Sunny
+2015-04-28,37,"Partly Cloudy"
+2015-04-29,7,Sunny
+2015-04-30,20,Sunny
+2015-05-01,31,"Partly Cloudy"
+2015-05-02,9,Sunny
+2015-05-03,50,"Partly Cloudy"
+2015-05-04,20,Sunny
+2015-05-05,23,Sunny
+2015-05-06,6,Sunny
+2015-05-07,3,Sunny
+2015-05-08,20,Sunny
+2015-05-09,6,Sunny
+2015-05-10,5,Sunny
+2015-05-11,5,Sunny
+2015-05-12,2,Sunny
+2015-05-13,20,Sunny
+2015-05-14,11,Sunny
+2015-05-15,7,Sunny
+2015-05-16,0,Sunny
+2015-05-17,3,Sunny
+2015-05-18,1,Sunny
+2015-05-19,28,"Partly Cloudy"
+2015-05-20,7,Sunny
+2015-05-21,4,Sunny
+2015-05-22,2,Sunny
+2015-05-23,8,Sunny
+2015-05-24,9,Sunny
+2015-05-25,11,Sunny
+2015-05-26,3,Sunny
+2015-05-27,2,Sunny
+2015-05-28,3,Sunny
+2015-05-29,6,Sunny
+2015-05-30,5,Sunny
+2015-05-31,7,Sunny
+2015-06-01,2,Sunny
+2015-06-02,4,Sunny
+2015-06-03,10,Sunny
+2015-06-04,6,Sunny
+2015-06-05,6,Sunny
+2015-06-06,4,Sunny
+2015-06-07,4,Sunny
+2015-06-08,0,Sunny
+2015-06-09,6,Sunny
+2015-06-10,46,"Partly Cloudy"
+2015-06-11,32,"Patchy light rain in area with thunder"
+2015-06-12,46,"Partly Cloudy"
+2015-06-13,39,"Partly Cloudy"
+2015-06-14,14,Sunny
+2015-06-15,33,"Patchy rain nearby"
+2015-06-16,14,Sunny
+2015-06-17,3,Sunny
+2015-06-18,7,Sunny
+2015-06-19,0,Sunny
+2015-06-20,0,Sunny
+2015-06-21,3,Sunny
+2015-06-22,8,Sunny
+2015-06-23,3,Sunny
+2015-06-24,6,Sunny
+2015-06-25,3,Sunny
+2015-06-26,0,Sunny
+2015-06-27,0,Sunny
+2015-06-28,0,Sunny
+2015-06-29,0,Sunny
+2015-06-30,0,Sunny
+2015-07-01,0,Sunny
+2015-07-02,1,Sunny
+2015-07-03,0,Sunny
+2015-07-04,0,Sunny
+2015-07-05,0,Sunny
+2015-07-06,5,Sunny
+2015-07-07,4,Sunny
+2015-07-08,15,Sunny
+2015-07-09,0,Sunny
+2015-07-10,0,Sunny
+2015-07-11,0,Sunny
+2015-07-12,0,Sunny
+2015-07-13,0,Sunny
+2015-07-14,0,Sunny
+2015-07-15,0,Sunny
+2015-07-16,12,Sunny
+2015-07-17,25,"Partly Cloudy"
+2015-07-18,8,Sunny
+2015-07-19,6,Sunny
+2015-07-20,6,Sunny
+2015-07-21,3,Sunny
+2015-07-22,9,Sunny
+2015-07-23,3,Sunny
+2015-07-24,6,Sunny
+2015-07-25,8,Sunny
+2015-07-26,4,Sunny
+2015-07-27,2,Sunny
+2015-07-28,0,Sunny
+2015-07-29,0,Sunny
+2015-07-30,7,Sunny
+2015-07-31,10,Sunny
+2015-08-01,7,Sunny
+2015-08-02,3,Sunny
+2015-08-03,11,Sunny
+2015-08-04,4,Sunny
+2015-08-05,0,Sunny
+2015-08-06,9,Sunny
+2015-08-07,5,Sunny
+2015-08-08,7,Sunny
+2015-08-09,0,Sunny
+2015-08-10,5,Sunny
+2015-08-11,3,Sunny
+2015-08-12,5,Sunny
+2015-08-13,2,Sunny
+2015-08-14,11,Sunny
+2015-08-15,47,"Partly Cloudy"
+2015-08-16,11,Sunny
+2015-08-17,11,Sunny
+2015-08-18,4,Sunny
+2015-08-19,13,Sunny
+2015-08-20,5,Sunny
+2015-08-21,10,Sunny
+2015-08-22,8,Sunny
+2015-08-23,11,Sunny
+2015-08-24,6,Sunny
+2015-08-25,2,Sunny
+2015-08-26,2,Sunny
+2015-08-27,4,Sunny
+2015-08-28,2,Sunny
+2015-08-29,3,Sunny
+2015-08-30,5,Sunny
+2015-08-31,13,Sunny
+2015-09-01,12,Sunny
+2015-09-02,8,Sunny
+2015-09-03,4,Sunny
+2015-09-04,17,Sunny
+2015-09-05,6,Sunny
+2015-09-06,15,Sunny
+2015-09-07,25,Sunny
+2015-09-08,6,Sunny
+2015-09-09,6,Sunny
+2015-09-10,15,Sunny
+2015-09-11,3,Sunny
+2015-09-12,46,"Partly Cloudy"
+2015-09-13,11,Sunny
+2015-09-14,14,Sunny
+2015-09-15,31,"Partly Cloudy"
+2015-09-16,100,"Light rain"
+2015-09-17,11,Sunny
+2015-09-18,4,Sunny
+2015-09-19,4,Sunny
+2015-09-20,3,Sunny
+2015-09-21,0,Sunny
+2015-09-22,0,Sunny
+2015-09-23,11,Sunny
+2015-09-24,20,Sunny
+2015-09-25,3,Sunny
+2015-09-26,93,Overcast
+2015-09-27,5,Sunny
+2015-09-28,14,Sunny
+2015-09-29,13,Sunny
+2015-09-30,16,Sunny
+2015-10-01,5,Sunny
+2015-10-02,44,"Partly Cloudy"
+2015-10-03,28,"Partly Cloudy"
+2015-10-04,89,"Patchy rain nearby"
+2015-10-05,70,"Light rain shower"
+2015-10-06,47,"Patchy rain nearby"
+2015-10-07,6,Sunny
+2015-10-08,17,Sunny
+2015-10-09,14,Sunny
+2015-10-10,14,Sunny
+2015-10-11,100,"Light rain shower"
+2015-10-12,89,"Light rain shower"
+2015-10-13,60,"Light rain shower"
+2015-10-14,0,Sunny
+2015-10-15,0,Sunny
+2015-10-16,5,Sunny
+2015-10-17,28,"Partly Cloudy"
+2015-10-18,72,"Patchy rain nearby"
+2015-10-19,83,"Light rain shower"
+2015-10-20,40,"Partly Cloudy"
+2015-10-21,7,Sunny
+2015-10-22,15,Sunny
+2015-10-23,6,Sunny
+2015-10-24,33,"Partly Cloudy"
+2015-10-25,18,Sunny
+2015-10-26,100,"Light drizzle"
+2015-10-27,14,Sunny
+2015-10-28,46,"Partly Cloudy"
+2015-10-29,48,"Partly Cloudy"
+2015-10-30,6,Sunny
+2015-10-31,60,"Partly Cloudy"
+2015-11-01,64,Cloudy
+2015-11-02,90,"Light rain shower"
+2015-11-03,67,Cloudy
+2015-11-04,100,"Light drizzle"
+2015-11-05,40,"Partly Cloudy"
+2015-11-06,10,Sunny
+2015-11-07,4,Sunny
+2015-11-08,0,Sunny
+2015-11-09,0,Sunny
+2015-11-10,0,Sunny
+2015-11-11,0,Sunny
+2015-11-12,0,Sunny
+2015-11-13,0,Sunny
+2015-11-14,0,Sunny
+2015-11-15,0,Sunny
+2015-11-16,4,Sunny
+2015-11-17,3,Sunny
+2015-11-18,36,"Partly Cloudy"
+2015-11-19,6,Sunny
+2015-11-20,100,Overcast
+2015-11-21,15,Sunny
+2015-11-22,78,Cloudy
+2015-11-23,2,Sunny
+2015-11-24,27,"Partly Cloudy"
+2015-11-25,32,"Partly Cloudy"
+2015-11-26,3,Sunny
+2015-11-27,13,Sunny
+2015-11-28,45,"Partly Cloudy"
+2015-11-29,3,Sunny
+2015-11-30,0,Sunny
+2015-12-01,25,"Partly Cloudy"
+2015-12-02,7,Sunny
+2015-12-03,4,Sunny
+2015-12-04,19,Sunny
+2015-12-05,15,Sunny
+2015-12-06,5,Sunny
+2015-12-07,100,Overcast
+2015-12-08,47,"Partly Cloudy"
+2015-12-09,7,Sunny
+2015-12-10,39,"Partly Cloudy"
+2015-12-11,20,Sunny
+2015-12-12,63,Cloudy
+2015-12-13,33,"Partly Cloudy"
+2015-12-14,82,"Light drizzle"
+2015-12-15,50,"Partly Cloudy"
+2015-12-16,1,Sunny
+2015-12-17,24,Sunny
+2015-12-18,19,Sunny
+2015-12-19,6,Sunny
+2015-12-20,8,Sunny
+2015-12-21,0,Sunny
+2015-12-22,3,Sunny
+2015-12-23,100,Overcast
+2015-12-24,0,Sunny
+2015-12-25,5,Sunny
+2015-12-26,100,Overcast
+2015-12-27,99,Overcast
+2015-12-28,75,"Patchy rain nearby"
+2015-12-29,3,Sunny
+2015-12-30,6,Sunny
+2015-12-31,100,Overcast
+2015-01-01,0,Sunny
+2015-01-02,22,Sunny
+2015-01-03,6,Sunny
+2015-01-04,6,Sunny
+2015-01-05,6,Sunny
+2015-01-06,7,Sunny
+2015-01-07,0,Sunny
+2015-01-08,0,Sunny
+2015-01-09,1,Sunny
+2015-01-10,0,Sunny
+2015-01-11,6,Sunny
+2015-01-12,2,Sunny
+2015-01-13,4,Sunny
+2015-01-14,0,Sunny
+2015-01-15,55,"Partly Cloudy"
+2015-01-16,10,Sunny
+2015-01-17,7,Sunny
+2015-01-18,100,"Light snow"
+2015-01-19,0,Sunny
+2015-01-20,82,Cloudy
+2015-01-21,74,Cloudy
+2015-01-22,10,Sunny
+2015-01-23,3,Sunny
+2015-01-24,9,Sunny
+2015-01-25,7,Sunny
+2015-01-26,4,Sunny
+2015-01-27,7,Sunny
+2015-01-28,5,Sunny
+2015-01-29,45,"Partly Cloudy"
+2015-01-30,27,"Partly Cloudy"
+2015-01-31,7,Sunny
+2015-02-01,14,Sunny
+2015-02-02,100,"Light sleet"
+2015-02-03,94,Overcast
+2015-02-04,20,Sunny
+2015-02-05,15,Sunny
+2015-02-06,23,Sunny
+2015-02-07,59,"Partly Cloudy"
+2015-02-08,2,Sunny
+2015-02-09,0,Sunny
+2015-02-10,100,Overcast
+2015-02-11,95,"Patchy rain nearby"
+2015-02-12,75,Cloudy
+2015-02-13,11,Sunny
+2015-02-14,85,Cloudy
+2015-02-15,30,"Partly Cloudy"
+2015-02-16,24,Sunny
+2015-02-17,28,"Partly Cloudy"
+2015-02-18,78,Cloudy
+2015-02-19,10,Sunny
+2015-02-20,23,Sunny
+2015-02-21,9,Sunny
+2015-02-22,29,"Partly Cloudy"
+2015-02-23,45,"Partly Cloudy"
+2015-02-24,22,Sunny
+2015-02-25,12,Sunny
+2015-02-26,100,Overcast
+2015-02-27,29,"Partly Cloudy"
+2015-02-28,23,Sunny
+2015-03-01,27,"Partly Cloudy"
+2015-03-02,45,"Partly Cloudy"
+2015-03-03,6,Sunny
+2015-03-04,19,Sunny
+2015-03-05,8,Sunny
+2015-03-06,0,Sunny
+2015-03-07,0,Sunny
+2015-03-08,19,Sunny
+2015-03-09,30,"Partly Cloudy"
+2015-03-10,0,Sunny
+2015-03-11,1,Sunny
+2015-03-12,0,Sunny
+2015-03-13,8,Sunny
+2015-03-14,7,Sunny
+2015-03-15,32,"Partly Cloudy"
+2015-03-16,12,Sunny
+2015-03-17,45,"Partly Cloudy"
+2015-03-18,100,"Light rain"
+2015-03-19,71,"Moderate or heavy rain in area with thunder"
+2015-03-20,81,"Light rain"
+2015-03-21,100,"Light drizzle"
+2015-03-22,49,"Partly Cloudy"
+2015-03-23,100,"Light rain shower"
+2015-03-24,95,"Light rain"
+2015-03-25,67,Cloudy
+2015-03-26,47,"Partly Cloudy"
+2015-03-27,30,"Partly Cloudy"
+2015-03-28,7,Sunny
+2015-03-29,9,Sunny
+2015-03-30,0,Sunny
+2015-03-31,0,Sunny

@@ -55,7 +55,12 @@
       var options = {
         datasets: {
           edinburghWeather: {
-            source: 'assets/data/edi-2015.csv',
+            source: 'assets/data/edinburgh-weather-2015.csv',
+            sourceType: 'csv',
+            ready: false
+          },
+          madridWeather: {
+            source: 'assets/data/madrid-weather-2015.csv',
             sourceType: 'csv',
             ready: false
           }
@@ -279,6 +284,64 @@
         return null;
       }
 
+      function drawSpokes() {
+        spokeGroups = circleGroup.selectAll('g.spoke-group').data(data);
+
+        spokeGroupsEnter = spokeGroups.enter()
+            .append('g')
+            .attr('transform', function(d, i) {
+              return 'rotate(' + (i / options.days * 360) + ')';
+            });
+
+        spokes = spokeGroupsEnter
+            .append('line')
+            .attr('class', 'spoke')
+            .attr('x1', circleGroupRadius - options.spokeLength)
+            .attr('y1', 0)
+            .attr('x2', circleGroupRadius)
+            .attr('y2', 0)
+            .style('stroke-width', options.spokeWidth)
+            .style('stroke', sunshine);
+      }
+
+      function updateSpokes() {
+        spokes
+            .data(data)
+            .style('stroke', sunshine);
+      }
+
+      function setEdinburghLocation() {
+        data = datasetsHelper.data.edinburghWeather.map(function(d, i) {
+          d.cloud_cover = +d.cloud_cover;
+
+          return d;
+        });
+
+        locationEdinburghRect
+            .attr('class', 'location-box active');
+
+        locationMadridRect
+            .attr('class', 'location-box');
+
+        updateSpokes();
+      }
+
+      function setMadridLocation() {
+        data = datasetsHelper.data.madridWeather.map(function(d, i) {
+          d.cloud_cover = +d.cloud_cover;
+
+          return d;
+        });
+
+        locationEdinburghRect
+            .attr('class', 'location-box');
+
+        locationMadridRect
+            .attr('class', 'location-box active');
+
+        updateSpokes();
+      }
+
       module.run = function() {
         data = datasetsHelper.data.edinburghWeather.map(function(d, i) {
           d.cloud_cover = +d.cloud_cover;
@@ -308,23 +371,7 @@
 
         // draw spokes
 
-        spokeGroups = circleGroup.selectAll('g.spoke-group').data(data);
-
-        spokeGroupsEnter = spokeGroups.enter()
-            .append('g')
-            .attr('transform', function(d, i) {
-              return 'rotate(' + (i / options.days * 360) + ')';
-            });
-
-        spokes = spokeGroupsEnter
-            .append('line')
-            .attr('class', 'spoke')
-            .attr('x1', circleGroupRadius - options.spokeLength)
-            .attr('y1', 0)
-            .attr('x2', circleGroupRadius)
-            .attr('y2', 0)
-            .style('stroke-width', options.spokeWidth)
-            .style('stroke', sunshine);
+        drawSpokes();
 
         // draw week lines
 
@@ -507,7 +554,7 @@
         locationEdinburghRectHeight = locationEdinburghTextBox.height + 2 * options.locationTextPadding;
 
         locationEdinburghRect = locationEdinburghCont.append('rect')
-            .attr('class', 'location-box active')
+            .attr('class', 'location-box')
             .attr('x', -locationEdinburghTextBox.width / 2 - options.locationTextPadding)
             .attr('y', -locationEdinburghTextBox.height / 2 - options.locationTextPadding)
             .attr('width', locationEdinburghRectWidth)
@@ -560,6 +607,15 @@
                 'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width + options.locationsInnerSpace + locationEdinburghRectWidth +
                 options.locationsInnerSpace + locationMadridRectWidth / 2) + ', 0)'
             );
+
+        // switch between locations; default is Edinburgh
+
+        locationEdinburghRect
+            .attr('class', 'location-box active')
+            .on('click', setEdinburghLocation);
+
+        locationMadridRect
+            .on('click', setMadridLocation);
       };
 
       return module;
