@@ -135,7 +135,7 @@
     var calendarChart = function() {
       var module = {};
 
-      var width = 500;
+      var width = window.innerWidth;
       var height = 600;
       var margins = {
         top: 20,
@@ -148,6 +148,7 @@
         days: 365,
         firstDayOffset: 4,
         circleGroupMargin: 40,
+        circleGroupMargin2: 50,
         spokeWidth: 3,
         spokeLength: 20,
         weekLineOffset: 5,
@@ -159,7 +160,7 @@
         weekSliceInnerOffset: 150,
         weekSliceOuterOffset: 25,
         weekSliceTextOffset: 5,
-        locationsOffset: 15,
+        locationsOffset: 50,
         locationsInnerSpace: 10,
         locationTextPadding: 5
       };
@@ -363,7 +364,7 @@
             .attr(
                 'transform',
                 'translate(' +
-                (availWidth / 2) +
+                (availWidth - circleGroupRadius - options.circleGroupMargin - options.circleGroupMargin2) +
                 ', ' +
                 (availHeight / 2) +
                 ')'
@@ -530,11 +531,7 @@
 
         // controls to choose between Edinburgh and Madrid; locations headline
 
-        locationsGroup = mainGroup.append('g')
-            .attr(
-                'transform',
-                'translate(' + (availWidth / 2) + ', ' + (options.locationsOffset) + ')'
-            );
+        locationsGroup = mainGroup.append('g');
 
         locationsHeadline = locationsGroup.append('text')
             .attr('class', 'location-headline')
@@ -606,6 +603,12 @@
                 'transform',
                 'translate(' + (-locationsTotalWidth / 2 + locationsHeadlineBox.width + options.locationsInnerSpace + locationEdinburghRectWidth +
                 options.locationsInnerSpace + locationMadridRectWidth / 2) + ', 0)'
+            );
+
+        locationsGroup
+            .attr(
+                'transform',
+                'translate(' + (locationsTotalWidth / 2 + options.locationsOffset) + ', ' + (options.locationsOffset) + ')'
             );
 
         // switch between locations; default is Edinburgh
