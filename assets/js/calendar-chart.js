@@ -232,12 +232,12 @@ var calendarChart = function() {
     spokes = spokeGroupsEnter
       .append('line')
       .attr('class', 'spoke')
-      .attr('x1', circleGroupRadius - options.spokeSunnyLength)
+      .attr('x1', circleGroupRadius)
       .attr('y1', 0)
       .attr('x2', circleGroupRadius)
       .attr('y2', 0)
       .style('stroke-width', options.spokeWidth)
-      .style('stroke', sunshine);
+      .style('stroke', k.alpha);
 
     spokesDrawn = true;
 
