@@ -46,6 +46,25 @@ div.location-control {
   }
 }
 
+div.year-controls {
+  margin-top: 30px;
+}
+
+div.year-control {
+  display: inline-block;
+  cursor: default;
+  padding-bottom: 1px;
+  border-bottom: 3px solid transparent;
+
+  &:not(:last-child) {
+    margin-right: 10px;
+  }
+
+  &.active {
+    border-color: $gamma;
+  }
+}
+
 div.weather-controls {
   margin-top: 30px;
 }

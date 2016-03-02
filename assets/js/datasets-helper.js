@@ -3,12 +3,52 @@ var datasetsHelper = function() {
 
   var options = {
     datasets: {
-      edinburghWeather: {
+      edinburghWeather2011: {
+        source: 'assets/data/edinburgh-weather-2011.csv',
+        sourceType: 'csv',
+        ready: false
+      },
+      edinburghWeather2012: {
+        source: 'assets/data/edinburgh-weather-2012.csv',
+        sourceType: 'csv',
+        ready: false
+      },
+      edinburghWeather2013: {
+        source: 'assets/data/edinburgh-weather-2013.csv',
+        sourceType: 'csv',
+        ready: false
+      },
+      edinburghWeather2014: {
+        source: 'assets/data/edinburgh-weather-2014.csv',
+        sourceType: 'csv',
+        ready: false
+      },
+      edinburghWeather2015: {
         source: 'assets/data/edinburgh-weather-2015.csv',
         sourceType: 'csv',
         ready: false
       },
-      madridWeather: {
+      madridWeather2011: {
+        source: 'assets/data/madrid-weather-2011.csv',
+        sourceType: 'csv',
+        ready: false
+      },
+      madridWeather2012: {
+        source: 'assets/data/madrid-weather-2012.csv',
+        sourceType: 'csv',
+        ready: false
+      },
+      madridWeather2013: {
+        source: 'assets/data/madrid-weather-2013.csv',
+        sourceType: 'csv',
+        ready: false
+      },
+      madridWeather2014: {
+        source: 'assets/data/madrid-weather-2014.csv',
+        sourceType: 'csv',
+        ready: false
+      },
+      madridWeather2015: {
         source: 'assets/data/madrid-weather-2015.csv',
         sourceType: 'csv',
         ready: false

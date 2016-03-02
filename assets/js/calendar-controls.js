@@ -4,10 +4,11 @@ var calendarControls = function() {
   // cached queries
   var v = {};
 
-  var activeLocation, activeWeatherCondition;
-  var locationButtons = {}, weatherConditionButtons = {};
+  var activeLocation, activeYear, activeWeatherCondition;
+  var locationButtons = {}, yearButtons = {}, weatherConditionButtons = {};
 
   v.locationButtons = document.querySelectorAll('[data-location]');
+  v.yearButtons = document.querySelectorAll('[data-year]');
   v.weatherConditionButtons = document.querySelectorAll('[data-weather]');
 
   function deactivateLocationControls() {
@@ -18,7 +19,15 @@ var calendarControls = function() {
     }
   }
 
-  function deactivateWeatherControls() {
+  function deactivateYearControls() {
+    var i;
+
+    for (i = 0; i < v.yearButtons.length; i++) {
+      v.yearButtons[i].classList.remove('active');
+    }
+  }
+
+  function deactivateWeatherConditionControls() {
     var i;
 
     for (i = 0; i < v.weatherConditionButtons.length; i++) {
@@ -35,9 +44,18 @@ var calendarControls = function() {
     }
   }
 
+  function setActiveYear(year) {
+    if (calendarChart.ready) {
+      deactivateYearControls();
+      activeYear = year;
+      yearButtons[year].classList.add('active');
+      calendarChart.update();
+    }
+  }
+
   function setActiveWeatherCondition(weatherCondition) {
     if (calendarChart.ready) {
-      deactivateWeatherControls();
+      deactivateWeatherConditionControls();
       activeWeatherCondition = weatherCondition;
       weatherConditionButtons[weatherCondition].classList.add('active');
       calendarChart.update();
@@ -57,6 +75,22 @@ var calendarControls = function() {
           setActiveLocation(location);
         }, false);
       })(location);
+    }
+  };
+
+  module.initYearButtons = function() {
+    var i, year;
+
+    for (i = 0; i < v.yearButtons.length; i++) {
+      year = v.yearButtons[i].getAttribute('data-year');
+
+      yearButtons[year] = v.yearButtons[i];
+
+      (function(year) {
+        v.yearButtons[i].addEventListener('click', function() {
+          setActiveYear(year);
+        }, false);
+      })(year);
     }
   };
 
@@ -82,6 +116,12 @@ var calendarControls = function() {
 
   module.setActiveLocation = setActiveLocation;
 
+  module.getActiveYear = function() {
+    return activeYear;
+  };
+
+  module.setActiveYear = setActiveYear;
+
   module.getActiveWeatherCondition = function() {
     return activeWeatherCondition;
   };
@@ -91,16 +131,21 @@ var calendarControls = function() {
   module.getStatus = function() {
     return {
       location: activeLocation,
+      year: activeYear,
       weatherCondition: activeWeatherCondition
     };
   };
 
-  module.setStatus = function(location, weatherCondition) {
+  module.setStatus = function(location, year, weatherCondition) {
     if (calendarChart.ready) {
       deactivateLocationControls();
+      deactivateYearControls();
+      deactivateWeatherConditionControls();
       activeLocation = location;
-      locationButtons[location].classList.add('active');
+      activeYear = year;
       activeWeatherCondition = weatherCondition;
+      locationButtons[location].classList.add('active');
+      yearButtons[year].classList.add('active');
       weatherConditionButtons[weatherCondition].classList.add('active');
       calendarChart.update();
     }

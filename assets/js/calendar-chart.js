@@ -16,7 +16,7 @@ var calendarChart = function() {
     circleGroupMargin: 40,
     spokeWidth: 3,
     spokeSunnyLength: 20,
-    spokeRainyMaxLength: 60,
+    spokeRainyMaxLength: 100,
     weekLineOffset: 5,
     weekLineWidth: 1,
     monthLineOffset: 8,
@@ -148,38 +148,31 @@ var calendarChart = function() {
     return null;
   }
 
-  function prepareWeatherData(location) {
-    data = datasetsHelper.data[location + 'Weather'].map(function(d, i) {
-      d.cloud_cover = +d.cloud_cover;
-      d.precip_mm = +d.precip_mm;
-
-      return d;
-    });
-
-    setWarmthDomain();
-    setPrecipitationDomain();
-
-    drawSpokes();
-  }
-
   function findMinMaxTempAllLocations() {
-    tempMaxMin = Math.min(
-      d3.min(datasetsHelper.data.edinburghWeather, function(d, i) {
-        return +d.max_temp;
-      }),
-      d3.min(datasetsHelper.data.madridWeather, function(d, i) {
-        return +d.max_temp;
-      })
-    );
+    var min = Infinity, minTest, max = -Infinity, maxTest, weatherDataKey;
 
-    tempMaxMax = Math.max(
-      d3.max(datasetsHelper.data.edinburghWeather, function(d, i) {
-        return +d.max_temp;
-      }),
-      d3.max(datasetsHelper.data.madridWeather, function(d, i) {
-        return +d.max_temp;
-      })
-    );
+    for (weatherDataKey in datasetsHelper.data) {
+      if (datasetsHelper.data.hasOwnProperty(weatherDataKey)) {
+        minTest = d3.min(datasetsHelper.data[weatherDataKey], function(d, i) {
+          return +d.max_temp;
+        });
+
+        if (minTest < min) {
+          min = minTest;
+        }
+
+        maxTest = d3.max(datasetsHelper.data[weatherDataKey], function(d, i) {
+          return +d.max_temp;
+        });
+
+        if (maxTest > max) {
+          max = maxTest;
+        }
+      }
+    }
+
+    tempMaxMin = min;
+    tempMaxMax = max;
   }
 
   function setWarmthDomain() {
@@ -188,14 +181,21 @@ var calendarChart = function() {
   }
 
   function findMaxPrecipitationAllLocations() {
-    precipitationMax = Math.max(
-      d3.max(datasetsHelper.data.edinburghWeather, function(d, i) {
-        return +d.precip_mm;
-      }),
-      d3.max(datasetsHelper.data.madridWeather, function(d, i) {
-        return +d.precip_mm;
-      })
-    );
+    var max = -Infinity, maxTest, weatherDataKey;
+
+    for (weatherDataKey in datasetsHelper.data) {
+      if (datasetsHelper.data.hasOwnProperty(weatherDataKey)) {
+        maxTest = d3.max(datasetsHelper.data[weatherDataKey], function(d, i) {
+          return +d.precip_mm;
+        });
+
+        if (maxTest > max) {
+          max = maxTest;
+        }
+      }
+    }
+
+    precipitationMax = max;
   }
 
   function setPrecipitationDomain() {
@@ -482,7 +482,17 @@ var calendarChart = function() {
 
     status = calendarControls.getStatus();
 
-    prepareWeatherData(status.location);
+    data = datasetsHelper.data[status.location + 'Weather' + status.year].map(function(d, i) {
+      d.cloud_cover = +d.cloud_cover;
+      d.precip_mm = +d.precip_mm;
+
+      return d;
+    });
+
+    setWarmthDomain();
+    setPrecipitationDomain();
+
+    drawSpokes();
 
     updateSpokes(status.weatherCondition);
   };
