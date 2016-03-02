@@ -6,6 +6,10 @@ $epsilon: #fff5b2;
 $zeta: #ddd;
 $eta: #8fa8f6;
 
+$durations: (
+        week-slice-fading: 200ms
+);
+
 body {
   margin: 0;
   font: 16px 'Helvetica Neue', Helvetica, sans-serif;
@@ -79,6 +83,12 @@ svg.calendar {
 
   path.week-slice {
     fill: $epsilon;
+    opacity: 0;
+    transition: opacity map_get($durations, week-slice-fading);
+
+    &.visible {
+      opacity: 1;
+    }
   }
 
   text.week-number-label {
@@ -86,6 +96,12 @@ svg.calendar {
     text-anchor: middle;
     dominant-baseline: central;
     fill: $beta;
+    opacity: 0;
+    transition: opacity map_get($durations, week-slice-fading);
+
+    &.visible {
+      opacity: 1;
+    }
   }
 
   text.location {

@@ -505,52 +505,69 @@
         weekNumberLabelText = weekNumberLabelGroup.append('text')
             .attr('class', 'week-number-label');
 
-        d3.select(document).on('mousemove', function() {
-          var coords, rad, weekData, rotationStartAngle, rotationEndAngle, textLabelRotation;
+        svg
+            .on('mouseenter', showWeekSlice)
+            .on('mouseleave', hideWeekSlice);
 
-          coords = d3.mouse(circleGroup.node());
+        d3.select(document)
+            .on('mousemove', moveWeekSlice);
+      }
 
-          rad = Math.atan2(coords[0], -coords[1]);
+      function showWeekSlice() {
+        weekSlice.attr('class', 'week-slice visible');
+        weekNumberLabelText.attr('class', 'week-number-label visible');
+      }
 
-          weekData = dayToWeekData(mapRadiansToDay(rad));
+      function hideWeekSlice() {
+        weekSlice.attr('class', 'week-slice');
+        weekNumberLabelText.attr('class', 'week-number-label');
+      }
 
-          if (weekData !== null) {
-            rotationStartAngle = (weekData[0] + 1) / options.days * 2 * Math.PI;
-            rotationEndAngle = ((weekData[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+      function moveWeekSlice() {
+        var coords, rad, weekData, rotationStartAngle, rotationEndAngle, textLabelRotation;
 
-            weekSliceArc
-                .startAngle(function() {
-                  return rotationStartAngle;
-                })
-                .endAngle(function() {
-                  return rotationEndAngle;
-                });
+        coords = d3.mouse(circleGroup.node());
 
-            weekSlice
-                .attr('d', weekSliceArc);
+        rad = Math.atan2(coords[0], -coords[1]);
 
-            textLabelRotation = (rotationStartAngle + rotationEndAngle) / 2 / (2 * Math.PI) * 360 - 90;
+        weekData = dayToWeekData(mapRadiansToDay(rad));
 
-            weekNumberLabelGroup
-                .attr('transform', 'rotate(' + textLabelRotation + ')');
+        if (weekData !== null) {
+          rotationStartAngle = (weekData[0] + 1) / options.days * 2 * Math.PI;
+          rotationEndAngle = ((weekData[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
 
-            weekNumberLabelText
-                .text('week ' + weekData[2])
-                .attr('transform', function() {
-                  var translateX, rotate;
+          weekSliceArc
+              .startAngle(function() {
+                return rotationStartAngle;
+              })
+              .endAngle(function() {
+                return rotationEndAngle;
+              });
 
-                  translateX =
-                      circleGroupRadius +
-                      options.weekLineOffset +
-                      options.weekSliceOuterOffset +
-                      options.weekSliceTextOffset;
+          weekSlice
+              .attr('d', weekSliceArc);
 
-                  rotate = textLabelRotation > 0 && textLabelRotation < 180 ? 270 : 90;
+          textLabelRotation = (rotationStartAngle + rotationEndAngle) / 2 / (2 * Math.PI) * 360 - 90;
 
-                  return 'translate(' + translateX + ', 0) rotate(' + rotate + ')';
-                });
-          }
-        });
+          weekNumberLabelGroup
+              .attr('transform', 'rotate(' + textLabelRotation + ')');
+
+          weekNumberLabelText
+              .text('week ' + weekData[2])
+              .attr('transform', function() {
+                var translateX, rotate;
+
+                translateX =
+                    circleGroupRadius +
+                    options.weekLineOffset +
+                    options.weekSliceOuterOffset +
+                    options.weekSliceTextOffset;
+
+                rotate = textLabelRotation > 0 && textLabelRotation < 180 ? 270 : 90;
+
+                return 'translate(' + translateX + ', 0) rotate(' + rotate + ')';
+              });
+        }
       }
 
       module.run = function() {
