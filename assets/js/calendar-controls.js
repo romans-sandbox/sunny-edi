@@ -4,79 +4,106 @@ var calendarControls = function() {
   // cached queries
   var v = {};
 
-  var activeWeather = 'sunny';
+  var activeLocation, activeWeatherCondition;
+  var locationButtons = {}, weatherConditionButtons = {};
 
-  v.locationEdinburghButton = document.querySelector('[data-location="edinburgh"]');
-  v.locationMadridButton = document.querySelector('[data-location="madrid"]');
-  v.weatherSunnyButton = document.querySelector('[data-weather="sunny"]');
-  v.weatherRainyButton = document.querySelector('[data-weather="rainy"]');
-  v.weatherWindyButton = document.querySelector('[data-weather="windy"]');
+  v.locationButtons = document.querySelectorAll('[data-location]');
+  v.weatherConditionButtons = document.querySelectorAll('[data-weather]');
 
-  function deactivateLocation() {
-    v.locationEdinburghButton.classList.remove('active');
-    v.locationMadridButton.classList.remove('active');
+  function deactivateLocationControls() {
+    var i;
+
+    for (i = 0; i < v.locationButtons.length; i++) {
+      v.locationButtons[i].classList.remove('active');
+    }
   }
 
-  function deactivateWeather() {
-    v.weatherSunnyButton.classList.remove('active');
-    v.weatherRainyButton.classList.remove('active');
-    v.weatherWindyButton.classList.remove('active');
+  function deactivateWeatherControls() {
+    var i;
+
+    for (i = 0; i < v.weatherConditionButtons.length; i++) {
+      v.weatherConditionButtons[i].classList.remove('active');
+    }
+  }
+
+  function setActiveLocation(location) {
+    if (calendarChart.ready) {
+      deactivateLocationControls();
+      activeLocation = location;
+      locationButtons[location].classList.add('active');
+      calendarChart.update();
+    }
+  }
+
+  function setActiveWeatherCondition(weatherCondition) {
+    if (calendarChart.ready) {
+      deactivateWeatherControls();
+      activeWeatherCondition = weatherCondition;
+      weatherConditionButtons[weatherCondition].classList.add('active');
+      calendarChart.update();
+    }
   }
 
   module.initLocationButtons = function() {
-    v.locationEdinburghButton.addEventListener('click', function() {
-      if (calendarChart.ready) {
-        deactivateLocation();
-        v.locationEdinburghButton.classList.add('active');
-        calendarChart.setLocationEdinburgh();
-      }
-    }, false);
+    var i, location;
 
-    v.locationMadridButton.addEventListener('click', function() {
-      if (calendarChart.ready) {
-        deactivateLocation();
-        v.locationMadridButton.classList.add('active');
-        calendarChart.setLocationMadrid();
-      }
-    }, false);
+    for (i = 0; i < v.locationButtons.length; i++) {
+      location = v.locationButtons[i].getAttribute('data-location');
 
-    v.locationEdinburghButton.classList.add('active');
+      locationButtons[location] = v.locationButtons[i];
+
+      (function(location) {
+        v.locationButtons[i].addEventListener('click', function() {
+          setActiveLocation(location);
+        }, false);
+      })(location);
+    }
   };
 
   module.initWeatherButtons = function() {
-    v.weatherSunnyButton.addEventListener('click', function() {
-      if (calendarChart.ready) {
-        deactivateWeather();
-        activeWeather = 'sunny';
-        v.weatherSunnyButton.classList.add('active');
-        calendarChart.setWeatherSunny();
-      }
-    }, false);
+    var i, weatherCondition;
 
-    v.weatherRainyButton.addEventListener('click', function() {
-      if (calendarChart.ready) {
-        deactivateWeather();
-        activeWeather = 'rainy';
-        v.weatherRainyButton.classList.add('active');
-        calendarChart.setWeatherRainy();
-      }
-    }, false);
+    for (i = 0; i < v.weatherConditionButtons.length; i++) {
+      weatherCondition = v.weatherConditionButtons[i].getAttribute('data-weather');
 
-    v.weatherWindyButton.addEventListener('click', function() {
-      alert('under development');
+      weatherConditionButtons[weatherCondition] = v.weatherConditionButtons[i];
 
-      /*if (calendarChart.ready) {
-       deactivateWeather();
-       v.weatherWindyButton.classList.add('active');
-       // calendarChart.setWeatherWindy();
-       }*/
-    }, false);
-
-    v.weatherSunnyButton.classList.add('active');
+      (function(weatherCondition) {
+        v.weatherConditionButtons[i].addEventListener('click', function() {
+          setActiveWeatherCondition(weatherCondition);
+        }, false);
+      })(weatherCondition);
+    }
   };
 
-  module.getActiveWeather = function() {
-    return activeWeather;
+  module.getActiveLocation = function() {
+    return activeLocation;
+  };
+
+  module.setActiveLocation = setActiveLocation;
+
+  module.getActiveWeatherCondition = function() {
+    return activeWeatherCondition;
+  };
+
+  module.setActiveWeatherCondition = setActiveWeatherCondition;
+
+  module.getStatus = function() {
+    return {
+      location: activeLocation,
+      weatherCondition: activeWeatherCondition
+    };
+  };
+
+  module.setStatus = function(location, weatherCondition) {
+    if (calendarChart.ready) {
+      deactivateLocationControls();
+      activeLocation = location;
+      locationButtons[location].classList.add('active');
+      activeWeatherCondition = weatherCondition;
+      weatherConditionButtons[weatherCondition].classList.add('active');
+      calendarChart.update();
+    }
   };
 
   return module;

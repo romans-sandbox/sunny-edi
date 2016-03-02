@@ -101,7 +101,7 @@ var calendarChart = function() {
 
   var svg, mainGroup;
   var circleGroup, circleGroupRadius;
-  var spokeGroups, spokeGroupsEnter, spokes;
+  var spokesDrawn = false, spokeGroups, spokeGroupsEnter, spokes;
   var weekLines, weekLinesEnter, weekLineArc;
   var monthLines, monthLinesEnter, monthLineArc;
   var monthLeftWings, monthLeftWingsEnter;
@@ -148,8 +148,8 @@ var calendarChart = function() {
     return null;
   }
 
-  function prepareWeatherEdinburghData() {
-    data = datasetsHelper.data.edinburghWeather.map(function(d, i) {
+  function prepareWeatherData(location) {
+    data = datasetsHelper.data[location + 'Weather'].map(function(d, i) {
       d.cloud_cover = +d.cloud_cover;
       d.precip_mm = +d.precip_mm;
 
@@ -158,18 +158,8 @@ var calendarChart = function() {
 
     setWarmthDomain();
     setPrecipitationDomain();
-  }
 
-  function prepareWeatherMadridData() {
-    data = datasetsHelper.data.madridWeather.map(function(d, i) {
-      d.cloud_cover = +d.cloud_cover;
-      d.precip_mm = +d.precip_mm;
-
-      return d;
-    });
-
-    setWarmthDomain();
-    setPrecipitationDomain();
+    drawSpokes();
   }
 
   function findMinMaxTempAllLocations() {
@@ -213,21 +203,6 @@ var calendarChart = function() {
       .domain([0, precipitationMax]);
   }
 
-  function init() {
-    svg = d3.select('#calendar')
-      .attr('width', width)
-      .attr('height', height);
-
-    mainGroup = svg.append('g')
-      .attr('transform', 'translate(' + margins.left + ', ' + margins.top + ')');
-
-    findMinMaxTempAllLocations();
-    findMaxPrecipitationAllLocations();
-    prepareWeatherEdinburghData();
-    setWarmthDomain();
-    setPrecipitationDomain();
-  }
-
   function prepareCircleGroup() {
     circleGroupRadius = Math.min(availWidth, availHeight) / 2 - options.circleGroupMargin;
     circleGroup = mainGroup.append('g')
@@ -242,6 +217,10 @@ var calendarChart = function() {
   }
 
   function drawSpokes() {
+    if (spokesDrawn) {
+      return false;
+    }
+
     spokeGroups = circleGroup.selectAll('g.spoke-group').data(data);
 
     spokeGroupsEnter = spokeGroups.enter()
@@ -259,26 +238,39 @@ var calendarChart = function() {
       .attr('y2', 0)
       .style('stroke-width', options.spokeWidth)
       .style('stroke', sunshine);
+
+    spokesDrawn = true;
+
+    return true;
   }
 
-  function updateSpokesSunny() {
-    spokes
-      .data(data)
-      .transition()
-      .duration(options.durations.spokeMorph)
-      .attr('x1', circleGroupRadius - options.spokeSunnyLength)
-      .style('stroke', sunshine);
-  }
+  function updateSpokes(weatherCondition) {
+    if (weatherCondition === 'sunny') {
+      spokes
+        .data(data)
+        .transition()
+        .duration(options.durations.spokeMorph)
+        .attr('x1', circleGroupRadius - options.spokeSunnyLength)
+        .style('stroke', sunshine);
 
-  function updateSpokesRainy() {
-    spokes
-      .data(data)
-      .transition()
-      .duration(options.durations.spokeMorph)
-      .attr('x1', function(d, i) {
-        return circleGroupRadius - precipitation(d.precip_mm);
-      })
-      .style('stroke', k.eta);
+      return true;
+    }
+
+    if (weatherCondition === 'rainy') {
+      spokes
+        .data(data)
+        .transition()
+        .duration(options.durations.spokeMorph)
+        .attr('x1', function(d, i) {
+          return circleGroupRadius - precipitation(d.precip_mm);
+        })
+        .style('stroke', k.eta);
+
+      return true;
+    }
+
+    console.error('Unknown weather condition `' + weatherCondition + '`.');
+    return false;
   }
 
   function drawWeekLines() {
@@ -452,17 +444,20 @@ var calendarChart = function() {
     }
   }
 
-  module.run = function() {
-    init();
+  module.init = function() {
+    svg = d3.select('#calendar')
+      .attr('width', width)
+      .attr('height', height);
+
+    mainGroup = svg.append('g')
+      .attr('transform', 'translate(' + margins.left + ', ' + margins.top + ')');
+
+    findMinMaxTempAllLocations();
+    findMaxPrecipitationAllLocations();
 
     // prepare circle group
 
     prepareCircleGroup();
-
-    // draw spokes
-
-    drawSpokes();
-    updateSpokesSunny();
 
     // draw week lines
 
@@ -482,42 +477,14 @@ var calendarChart = function() {
     module.ready = true;
   };
 
-  module.setLocationEdinburgh = function() {
-    var activeWeather;
+  module.update = function() {
+    var status;
 
-    prepareWeatherEdinburghData();
+    status = calendarControls.getStatus();
 
-    activeWeather = calendarControls.getActiveWeather();
+    prepareWeatherData(status.location);
 
-    if (activeWeather === 'sunny') {
-      updateSpokesSunny();
-    }
-
-    if (activeWeather === 'rainy') {
-      updateSpokesRainy();
-    }
-  };
-
-  module.setLocationMadrid = function() {
-    prepareWeatherMadridData();
-
-    activeWeather = calendarControls.getActiveWeather();
-
-    if (activeWeather === 'sunny') {
-      updateSpokesSunny();
-    }
-
-    if (activeWeather === 'rainy') {
-      updateSpokesRainy();
-    }
-  };
-
-  module.setWeatherSunny = function() {
-    updateSpokesSunny();
-  };
-
-  module.setWeatherRainy = function() {
-    updateSpokesRainy();
+    updateSpokes(status.weatherCondition);
   };
 
   module.ready = false;
