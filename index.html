@@ -45,7 +45,8 @@
       delta: '#fcff6c',
       epsilon: '#fff5b2',
       zeta: '#ccc',
-      eta: '#8fa8f6'
+      eta: '#8fa8f6',
+      theta: '#eb6361'
     };
 
     var utils = function() {
@@ -180,7 +181,7 @@
       var availWidth = width - margins.left - margins.right;
       var availHeight = height - margins.top - margins.bottom;
 
-      var data, precipitationMax = 0;
+      var data, tempMaxMin = 0, tempMaxMax = Infinity, precipitationMax = 0;
 
       // weeks data
       var weeksData = function() {
@@ -256,16 +257,15 @@
       var weekSlice, weekSliceArc;
       var weekNumberLabelGroup, weekNumberLabelText;
 
+      var warmth = d3.scale.linear()
+          .range([k.delta, k.theta]);
+
       var precipitation = d3.scale.linear()
           .range([1, options.spokeRainyMaxLength]);
 
       function sunshine(d, i) {
         if (d.weather_desc === 'Sunny') {
-          return k.delta;
-        }
-
-        if (d.cloud_cover <= 10) {
-          return k.delta;
+          return warmth(d.max_temp);
         }
 
         return k.zeta;
@@ -303,6 +303,7 @@
           return d;
         });
 
+        setWarmthDomain();
         setPrecipitationDomain();
       }
 
@@ -314,7 +315,33 @@
           return d;
         });
 
+        setWarmthDomain();
         setPrecipitationDomain();
+      }
+
+      function findMinMaxTempAllLocations() {
+        tempMaxMin = Math.min(
+            d3.min(datasetsHelper.data.edinburghWeather, function(d, i) {
+              return +d.max_temp;
+            }),
+            d3.min(datasetsHelper.data.madridWeather, function(d, i) {
+              return +d.max_temp;
+            })
+        );
+
+        tempMaxMax = Math.max(
+            d3.max(datasetsHelper.data.edinburghWeather, function(d, i) {
+              return +d.max_temp;
+            }),
+            d3.max(datasetsHelper.data.madridWeather, function(d, i) {
+              return +d.max_temp;
+            })
+        );
+      }
+
+      function setWarmthDomain() {
+        warmth
+            .domain([tempMaxMin, tempMaxMax]);
       }
 
       function findMaxPrecipitationAllLocations() {
@@ -341,8 +368,10 @@
         mainGroup = svg.append('g')
             .attr('transform', 'translate(' + margins.left + ', ' + margins.top + ')');
 
+        findMinMaxTempAllLocations();
         findMaxPrecipitationAllLocations();
         prepareWeatherEdinburghData();
+        setWarmthDomain();
         setPrecipitationDomain();
       }
 
