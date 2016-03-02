@@ -6,5 +6,7 @@ var k = {
   epsilon: '#fff5b2',
   zeta: '#ccc',
   eta: '#8fa8f6',
-  theta: '#eb6361'
+  theta: '#eb6361',
+  iota: '#eee',
+  kappa: '#9d42a5'
 };

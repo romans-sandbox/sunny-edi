@@ -17,6 +17,7 @@ var calendarChart = function() {
     spokeWidth: 3,
     spokeSunnyLength: 20,
     spokeRainyMaxLength: 100,
+    spokeWindyLength: 40,
     weekLineOffset: 5,
     weekLineWidth: 1,
     monthLineOffset: 8,
@@ -26,6 +27,11 @@ var calendarChart = function() {
     weekSliceInnerOffset: 150,
     weekSliceOuterOffset: 25,
     weekSliceTextOffset: 5,
+    spokeDashWidth: 10,
+    spokeDashSpace: 30,
+    windDashDivisor: 10,
+    minWindDashCoefficient: 1,
+    maxWindDashCoefficient: 30,
     durations: {
       spokeMorph: 500
     }
@@ -34,7 +40,7 @@ var calendarChart = function() {
   var availWidth = width - margins.left - margins.right;
   var availHeight = height - margins.top - margins.bottom;
 
-  var data, tempMaxMin = 0, tempMaxMax = Infinity, precipitationMax = 0;
+  var data, tempMaxMin = 0, tempMaxMax = Infinity, precipitationMax = 0, windSpeedMin = 0, windSpeedMax = Infinity;
 
   // weeks data
   var weeksData = function() {
@@ -109,6 +115,7 @@ var calendarChart = function() {
   var monthNameGroups, monthNameGroupsEnter;
   var weekSlice, weekSliceArc;
   var weekNumberLabelGroup, weekNumberLabelText;
+  var spokeDashes, spokeDashesDataChanged = false, spokeDashMainGroup, spokeDashGroups, spokeDashGroupsEnter;
 
   var warmth = d3.scale.linear()
     .range([k.delta, k.theta]);
@@ -116,12 +123,31 @@ var calendarChart = function() {
   var precipitation = d3.scale.linear()
     .range([1, options.spokeRainyMaxLength]);
 
+  var windSpeed = d3.scale.linear()
+    .range([options.minWindDashCoefficient, options.maxWindDashCoefficient]);
+
   function sunshine(d, i) {
     if (d.weather_desc === 'Sunny') {
       return warmth(d.max_temp);
     }
 
     return k.zeta;
+  }
+
+  function windColor(d, i) {
+    var ratio;
+
+    ratio = (d.wind_speed - windSpeedMin) / (windSpeedMax - windSpeedMin);
+
+    if (ratio > 0.8) {
+      return k.theta;
+    }
+
+    if (ratio > 0.5) {
+      return k.kappa;
+    }
+
+    return k.eta;
   }
 
   function mapRadiansToDay(rad) {
@@ -203,6 +229,38 @@ var calendarChart = function() {
       .domain([0, precipitationMax]);
   }
 
+  function findMinMaxWindSpeedAllLocations() {
+    var min = Infinity, minTest, max = -Infinity, maxTest, weatherDataKey;
+
+    for (weatherDataKey in datasetsHelper.data) {
+      if (datasetsHelper.data.hasOwnProperty(weatherDataKey)) {
+        minTest = d3.min(datasetsHelper.data[weatherDataKey], function(d, i) {
+          return +d.wind_speed;
+        });
+
+        if (minTest < min) {
+          min = minTest;
+        }
+
+        maxTest = d3.max(datasetsHelper.data[weatherDataKey], function(d, i) {
+          return +d.wind_speed;
+        });
+
+        if (maxTest > max) {
+          max = maxTest;
+        }
+      }
+    }
+
+    windSpeedMin = min;
+    windSpeedMax = max;
+  }
+
+  function setWindSpeedDomain() {
+    windSpeed
+      .domain([windSpeedMin, windSpeedMax]);
+  }
+
   function prepareCircleGroup() {
     circleGroupRadius = Math.min(availWidth, availHeight) / 2 - options.circleGroupMargin;
     circleGroup = mainGroup.append('g')
@@ -225,6 +283,7 @@ var calendarChart = function() {
 
     spokeGroupsEnter = spokeGroups.enter()
       .append('g')
+      .attr('class', 'spoke-group')
       .attr('transform', function(d, i) {
         return 'rotate(' + (i / options.days * 360) + ')';
       });
@@ -239,12 +298,59 @@ var calendarChart = function() {
       .style('stroke-width', options.spokeWidth)
       .style('stroke', k.alpha);
 
+    spokeDashMainGroup = circleGroup.append('g')
+      .attr('class', 'spoke-dash-main-group');
+
+    spokeDashGroups = spokeDashMainGroup.selectAll('g.spoke-dash-group').data(data);
+
+    spokeDashGroupsEnter = spokeDashGroups.enter()
+      .append('g')
+      .attr('class', 'spoke-dash-group')
+      .attr('transform', function(d, i) {
+        return 'rotate(' + (i / options.days * 360) + ')';
+      });
+
+    spokeDashes = spokeDashGroupsEnter.append('line')
+      .attr('class', 'spoke-dash')
+      .attr('x1', circleGroupRadius)
+      .attr('y1', 0)
+      .attr('x2', circleGroupRadius - options.spokeWindyLength)
+      .attr('y2', 0)
+      .style('stroke-width', options.spokeWidth)
+      .style('stroke-dasharray', options.spokeDashWidth + ' ' + options.spokeDashSpace)
+      .style('stroke', windColor);
+
+    d3.timer(function(elapsed) {
+      /**
+       * todo pause timer when spoke dashes not visible
+       */
+
+      if (spokeDashesDataChanged) {
+        spokeDashes.data(data);
+      }
+
+      spokeDashes
+        .style('stroke-dashoffset', function(d, i) {
+          var self;
+
+          self = d3.select(this);
+
+          return window.parseFloat(self.style('stroke-dashoffset'))
+            - windSpeed(d.wind_speed) / options.windDashDivisor;
+        });
+
+      spokeDashesDataChanged = false;
+    });
+
     spokesDrawn = true;
 
     return true;
   }
 
-  function updateSpokes(weatherCondition) {
+  function updateSpokesAndDashes(weatherCondition) {
+    spokeDashMainGroup
+      .attr('class', 'spoke-dash-main-group');
+
     if (weatherCondition === 'sunny') {
       spokes
         .data(data)
@@ -265,6 +371,26 @@ var calendarChart = function() {
           return circleGroupRadius - precipitation(d.precip_mm);
         })
         .style('stroke', k.eta);
+
+      return true;
+    }
+
+    if (weatherCondition === 'windy') {
+      spokes
+        .data(data)
+        .transition()
+        .duration(options.durations.spokeMorph)
+        .attr('x1', circleGroupRadius - options.spokeWindyLength)
+        .style('stroke', k.iota);
+
+      spokeDashMainGroup
+        .attr('class', 'spoke-dash-main-group visible');
+
+      spokeDashes
+        .data(data)
+        .transition()
+        .duration(options.durations.spokeMorph)
+        .style('stroke', windColor);
 
       return true;
     }
@@ -454,6 +580,7 @@ var calendarChart = function() {
 
     findMinMaxTempAllLocations();
     findMaxPrecipitationAllLocations();
+    findMinMaxWindSpeedAllLocations();
 
     // prepare circle group
 
@@ -485,16 +612,20 @@ var calendarChart = function() {
     data = datasetsHelper.data[status.location + 'Weather' + status.year].map(function(d, i) {
       d.cloud_cover = +d.cloud_cover;
       d.precip_mm = +d.precip_mm;
+      d.wind_speed = +d.wind_speed;
 
       return d;
     });
 
     setWarmthDomain();
     setPrecipitationDomain();
+    setWindSpeedDomain();
 
     drawSpokes();
 
-    updateSpokes(status.weatherCondition);
+    spokeDashesDataChanged = true;
+
+    updateSpokesAndDashes(status.weatherCondition);
   };
 
   module.ready = false;

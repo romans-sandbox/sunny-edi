@@ -6,9 +6,12 @@ $epsilon: #fff5b2;
 $zeta: #ddd;
 $eta: #8fa8f6;
 $theta: #eb6361;
+$iota: #eee;
+$kappa: #9d42a5;
 
 $durations: (
-        week-slice-fading: 200ms
+        week-slice-fading: 200ms,
+        spoke-dash-fading: 1s
 );
 
 body {
@@ -92,6 +95,15 @@ div.calendar-container {
 svg.calendar {
   line.spoke {
     stroke: $beta;
+  }
+
+  g.spoke-dash-main-group {
+    opacity: 0;
+    transition: opacity map_get($durations, spoke-dash-fading);
+
+    &.visible {
+      opacity: 1;
+    }
   }
 
   text.month-name {
