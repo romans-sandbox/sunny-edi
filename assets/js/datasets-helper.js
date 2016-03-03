@@ -116,6 +116,35 @@ var datasetsHelper = function() {
     }
   };
 
+  module.findMinMaxTempAllLocations = function() {
+    var min = Infinity, minTest, max = -Infinity, maxTest, weatherDataKey;
+
+    for (weatherDataKey in loadedDatasets) {
+      if (loadedDatasets.hasOwnProperty(weatherDataKey)) {
+        minTest = d3.min(loadedDatasets[weatherDataKey], function(d, i) {
+          return +d.min_temp;
+        });
+
+        if (minTest < min) {
+          min = minTest;
+        }
+
+        maxTest = d3.max(loadedDatasets[weatherDataKey], function(d, i) {
+          return +d.max_temp;
+        });
+
+        if (maxTest > max) {
+          max = maxTest;
+        }
+      }
+    }
+
+    return {
+      min: min,
+      max: max
+    };
+  };
+
   module.data = loadedDatasets;
 
   return module;

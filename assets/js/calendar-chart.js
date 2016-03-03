@@ -166,7 +166,7 @@ var calendarChart = function() {
     var i;
 
     for (i = 0; i < weeksData.length; i++) {
-      if (day >= weeksData[i][0] && day <= weeksData[i][1]) {
+      if (day > weeksData[i][0] && day <= weeksData[i][1]) {
         return weeksData[i];
       }
     }
@@ -404,10 +404,10 @@ var calendarChart = function() {
       .innerRadius(circleGroupRadius + options.weekLineOffset)
       .outerRadius(circleGroupRadius + options.weekLineOffset + options.weekLineWidth)
       .startAngle(function(d, i) {
-        return (d[0] + 1) / options.days * 2 * Math.PI;
+        return (d[0]) / options.days * 2 * Math.PI;
       })
       .endAngle(function(d, i) {
-        return ((d[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+        return ((d[1] - 1) / options.days + options.spokeWidth / (circleGroupRadius * 2 * Math.PI)) * 2 * Math.PI;
       });
 
     weekLines = circleGroup.selectAll('path.week-line')
@@ -423,10 +423,10 @@ var calendarChart = function() {
       .innerRadius(circleGroupRadius + options.monthLineOffset)
       .outerRadius(circleGroupRadius + options.monthLineOffset + options.monthLineWidth)
       .startAngle(function(d, i) {
-        return d.from / options.days * 2 * Math.PI;
+        return (d.from - 1) / options.days * 2 * Math.PI;
       })
       .endAngle(function(d, i) {
-        return ((d.to - 1) / options.days + options.spokeWidth / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+        return ((d.to - 1) / options.days + options.spokeWidth / (circleGroupRadius * 2 * Math.PI)) * 2 * Math.PI;
       });
 
     monthLines = circleGroup.selectAll('path.month-line')
@@ -443,7 +443,7 @@ var calendarChart = function() {
     monthLeftWingsEnter = monthLeftWings.enter().append('line')
       .attr('class', 'month-left-wing')
       .attr('transform', function(d, i) {
-        return 'rotate(' + (d.from / options.days * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
+        return 'rotate(' + (((d.from - 1) / options.days) * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
       })
       .attr('x1', circleGroupRadius + options.monthLineOffset)
       .attr('y1', 0)
@@ -458,7 +458,7 @@ var calendarChart = function() {
     monthRightWingsEnter = monthRightWings.enter().append('line')
       .attr('class', 'month-right-wing')
       .attr('transform', function(d, i) {
-        return 'rotate(' + (d.to / options.days * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
+        return 'rotate(' + (((d.to - 1) / options.days + options.monthLineWidth / 2 / (circleGroupRadius * 2 * Math.PI)) * 360 - 90 + 180 / (circleGroupRadius * Math.PI)) + ')';
       })
       .attr('x1', circleGroupRadius + options.monthLineOffset)
       .attr('y1', 0)
@@ -516,25 +516,29 @@ var calendarChart = function() {
   function showWeekSlice() {
     weekSlice.attr('class', 'week-slice visible');
     weekNumberLabelText.attr('class', 'week-number-label visible');
+
+    calendarWeekChart.show();
   }
 
   function hideWeekSlice() {
     weekSlice.attr('class', 'week-slice');
     weekNumberLabelText.attr('class', 'week-number-label');
+
+    calendarWeekChart.hide();
   }
 
   function moveWeekSlice() {
-    var coords, rad, weekData, rotationStartAngle, rotationEndAngle, textLabelRotation;
+    var coords, rad, day, weekData, rotationStartAngle, rotationEndAngle, textLabelRotation;
 
     coords = d3.mouse(circleGroup.node());
 
     rad = Math.atan2(coords[0], -coords[1]);
-
-    weekData = dayToWeekData(mapRadiansToDay(rad));
+    day = mapRadiansToDay(rad);
+    weekData = dayToWeekData(day);
 
     if (weekData !== null) {
-      rotationStartAngle = (weekData[0] + 1) / options.days * 2 * Math.PI;
-      rotationEndAngle = ((weekData[1]) / options.days + 1 / (circleGroupRadius * Math.PI)) * 2 * Math.PI;
+      rotationStartAngle = (weekData[0]) / options.days * 2 * Math.PI;
+      rotationEndAngle = ((weekData[1] - 1) / options.days + options.spokeWidth / (circleGroupRadius * 2 * Math.PI)) * 2 * Math.PI;
 
       weekSliceArc
         .startAngle(function() {
@@ -567,6 +571,8 @@ var calendarChart = function() {
 
           return 'translate(' + translateX + ', 0) rotate(' + rotate + ')';
         });
+
+      calendarWeekChart.update(weekData);
     }
   }
 

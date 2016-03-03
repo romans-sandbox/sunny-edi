@@ -8,5 +8,15 @@ var utils = function() {
     return monthNames[i];
   };
 
+  // https://stackoverflow.com/questions/563406/add-days-to-datetime
+  module.addDaysToDate = function(date, days) {
+    var result;
+
+    result = new Date(date);
+    result.setDate(result.getDate() + days);
+
+    return result;
+  };
+
   return module;
 }();

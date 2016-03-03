@@ -11,7 +11,8 @@ $kappa: #9d42a5;
 
 $durations: (
         week-slice-fading: 200ms,
-        spoke-dash-fading: 500ms
+        spoke-dash-fading: 500ms,
+        week-calendar: 500ms
 );
 
 body {
@@ -90,6 +91,7 @@ div.weather-control {
 div.calendar-container {
   float: right;
   width: 600px;
+  position: relative;
 }
 
 svg.calendar {
@@ -159,5 +161,68 @@ svg.calendar {
     text-anchor: middle;
     dominant-baseline: central;
     fill: $beta;
+  }
+}
+
+svg.week-calendar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+
+  g.main-group {
+    opacity: 0;
+    transition: opacity map_get($durations, week-calendar);
+
+    &.visible {
+      opacity: 1;
+    }
+  }
+
+  g.axis {
+    path,
+    line {
+      fill: none;
+      stroke: $gamma;
+      shape-rendering: crispEdges;
+    }
+  }
+
+  g.axis.x {
+    path {
+      display: none;
+    }
+  }
+
+  path.line {
+    fill: none;
+    stroke: $beta;
+    stroke-width: 2px;
+
+    &.max-temp {
+      stroke: $theta;
+    }
+
+    &.min-temp {
+      stroke: $eta;
+    }
+
+    &.zero {
+      stroke-width: 1px;
+      stroke-dasharray: 3px 3px;
+      stroke: $gamma;
+    }
+  }
+
+  g.tick {
+    text {
+      font-size: 0.6em;
+    }
+  }
+
+  text.y-axis-label {
+    text-anchor: end;
+    font-size: 0.6em;
   }
 }
