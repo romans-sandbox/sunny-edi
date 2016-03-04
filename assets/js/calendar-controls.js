@@ -11,6 +11,7 @@ var calendarControls = function() {
   v.yearButtons = document.querySelectorAll('[data-year]');
   v.weatherConditionButtons = document.querySelectorAll('[data-weather]');
   v.weatherConditionIcons = document.querySelectorAll('[data-weather-icon]');
+  v.fullscreenLink = document.querySelector('#fullscreen');
 
   function deactivateLocationControls() {
     var i;
@@ -132,6 +133,39 @@ var calendarControls = function() {
         v.weatherConditionIcons[i].getAttribute('data-weather-icon')
       );
     }
+  };
+
+  module.initFullscreenLink = function() {
+    v.fullscreenLink.addEventListener('click', function() {
+      var f, fOut, on;
+
+      on = document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.mozFullScreenElement ||
+        document.msFullscreenElement;
+
+      f =
+        document.documentElement.requestFullscreen ||
+        document.documentElement.mozRequestFullScreen ||
+        document.documentElement.msRequestFullscreen ||
+        document.documentElement.webkitRequestFullscreen;
+
+      fOut =
+        document.exitFullscreen ||
+        document.mozCancelFullScreen ||
+        document.msExitFullscreen ||
+        document.webkitExitFullscreen;
+
+      if (on) {
+        if (typeof fOut === 'function') {
+          fOut.call(document);
+        }
+      } else {
+        if (typeof f === 'function') {
+          f.call(document.documentElement);
+        }
+      }
+    }, false);
   };
 
   module.getActiveLocation = function() {
