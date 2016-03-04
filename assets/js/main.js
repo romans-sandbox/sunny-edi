@@ -7,4 +7,5 @@ datasetsHelper.readyAllCallback(function() {
   calendarControls.initYearButtons();
   calendarControls.initWeatherButtons();
   calendarControls.setStatus('edinburgh', '2015', 'sunny');
+  legends.init();
 });
