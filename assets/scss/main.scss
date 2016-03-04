@@ -88,6 +88,19 @@ div.weather-control {
   }
 }
 
+div.weather-icon {
+  display: inline-block;
+  text-align: center;
+
+  svg {
+    width: 50%;
+
+    path {
+      fill: $gamma;
+    }
+  }
+}
+
 div.calendar-container {
   float: right;
   width: 600px;

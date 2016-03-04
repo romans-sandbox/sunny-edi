@@ -10,3 +10,7 @@ var k = {
   iota: '#eee',
   kappa: '#9d42a5'
 };
+
+var paths = {
+  svg: './assets/svg'
+};
