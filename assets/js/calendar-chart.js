@@ -5,7 +5,7 @@ var calendarChart = function() {
   var height = 600;
   var margins = {
     top: 10,
-    right: 10,
+    right: 20,
     bottom: 10,
     left: 10
   };
