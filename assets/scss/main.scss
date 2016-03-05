@@ -125,6 +125,11 @@ div.links {
   position: absolute;
   bottom: 0;
 
+  img {
+    vertical-align: middle;
+    margin-right: 20px;
+  }
+
   a {
     color: $beta;
     text-transform: lowercase;
