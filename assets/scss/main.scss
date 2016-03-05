@@ -25,6 +25,8 @@ div.main-container {
 }
 
 div.content-container {
+  position: relative;
+  height: 600px;
   float: left;
   margin-right: -600px;
   padding-left: 30px;
@@ -115,6 +117,27 @@ svg.legends {
 
     &.visible {
       opacity: 1;
+    }
+  }
+}
+
+div.links {
+  position: absolute;
+  bottom: 0;
+
+  a {
+    color: $beta;
+    text-transform: lowercase;
+    font-size: 0.9em;
+    text-decoration: none;
+
+    &:not(:last-child) {
+      margin-right: 10px;
+    }
+
+    &:hover,
+    &:active {
+      color: $theta;
     }
   }
 }

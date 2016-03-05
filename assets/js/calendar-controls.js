@@ -12,6 +12,7 @@ var calendarControls = function() {
   v.weatherConditionButtons = document.querySelectorAll('[data-weather]');
   v.weatherConditionIcons = document.querySelectorAll('[data-weather-icon]');
   v.fullscreenLink = document.querySelector('#fullscreen');
+  v.creditsLink = document.querySelector('#credits');
 
   function deactivateLocationControls() {
     var i;
@@ -136,8 +137,10 @@ var calendarControls = function() {
   };
 
   module.initFullscreenLink = function() {
-    v.fullscreenLink.addEventListener('click', function() {
+    v.fullscreenLink.addEventListener('click', function(ev) {
       var f, fOut, on;
+
+      ev.preventDefault();
 
       on = document.fullscreenElement ||
         document.webkitFullscreenElement ||
@@ -165,6 +168,15 @@ var calendarControls = function() {
           f.call(document.documentElement);
         }
       }
+    }, false);
+  };
+
+  module.initCreditsLink = function() {
+    v.creditsLink.addEventListener('click', function(ev) {
+      ev.preventDefault();
+
+      window.alert('Weather data provided by World Weather Online.\nWeather icons freely distributed via ' +
+        'Flaticon and designed by Freepik.\n\nExperience developed by NULLMIGHTY.');
     }, false);
   };
 
