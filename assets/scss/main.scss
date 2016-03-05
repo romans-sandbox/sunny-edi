@@ -12,7 +12,8 @@ $kappa: #9d42a5;
 $durations: (
         week-slice-fading: 200ms,
         spoke-dash-fading: 500ms,
-        week-calendar: 500ms
+        week-calendar: 500ms,
+        control: 200ms
 );
 
 body {
@@ -42,6 +43,7 @@ div.location-control {
   cursor: default;
   padding-bottom: 1px;
   border-bottom: 3px solid transparent;
+  transition: border-color map_get($durations, control);
 
   &:not(:last-child) {
     margin-right: 15px;
@@ -61,6 +63,7 @@ div.year-control {
   cursor: default;
   padding-bottom: 1px;
   border-bottom: 3px solid transparent;
+  transition: border-color map_get($durations, control);
 
   &:not(:last-child) {
     margin-right: 15px;
@@ -80,6 +83,7 @@ div.weather-control {
   cursor: default;
   padding-bottom: 1px;
   border-bottom: 3px solid transparent;
+  transition: border-color map_get($durations, control);
 
   &:not(:last-child) {
     margin-right: 30px;
