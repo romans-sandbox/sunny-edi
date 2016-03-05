@@ -632,6 +632,8 @@ var calendarChart = function() {
     spokeDashesDataChanged = true;
 
     updateSpokesAndDashes(status.weatherCondition);
+
+    legends.show(status.weatherCondition);
   };
 
   module.ready = false;

@@ -102,6 +102,23 @@ div.weather-icon {
   }
 }
 
+div.legends-container {
+  margin-top: 100px;
+}
+
+svg.legends {
+  g.sunny,
+  g.rainy,
+  g.windy {
+    opacity: 0;
+    transition: opacity map_get($durations, spoke-dash-fading);
+
+    &.visible {
+      opacity: 1;
+    }
+  }
+}
+
 div.calendar-container {
   float: right;
   width: 600px;

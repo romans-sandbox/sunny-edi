@@ -8,6 +8,6 @@ datasetsHelper.readyAllCallback(function() {
   calendarControls.initWeatherButtons();
   calendarControls.initWeatherIcons();
   calendarControls.initFullscreenLink();
-  calendarControls.setStatus('edinburgh', '2015', 'sunny');
   legends.init();
+  calendarControls.setStatus('edinburgh', '2015', 'rainy');
 });
