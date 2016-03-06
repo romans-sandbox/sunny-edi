@@ -78,7 +78,8 @@ var calendarWeekChart = function() {
 
     svg = d3.select('#week-calendar')
       .attr('width', width)
-      .attr('height', height);
+      .attr('height', height)
+      .attr('viewBox', '0 0 ' + width + ' ' + height);
 
     mainGroup = svg.append('g')
       .attr('class', 'main-group')
@@ -185,6 +186,12 @@ var calendarWeekChart = function() {
 
   module.hide = function() {
     mainGroup.attr('class', 'main-group');
+  };
+
+  module.setSize = function(ratio) {
+    svg
+      .attr('width', width * ratio)
+      .attr('height', height * ratio);
   };
 
   return module;

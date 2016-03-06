@@ -37,8 +37,7 @@ var calendarChart = function() {
     }
   };
 
-  var availWidth = width - margins.left - margins.right;
-  var availHeight = height - margins.top - margins.bottom;
+  var availWidth, availHeight;
 
   var data, tempMaxMin = 0, tempMaxMax = Infinity, precipitationMax = 0, windSpeedMin = 0, windSpeedMax = Infinity;
 
@@ -125,6 +124,28 @@ var calendarChart = function() {
 
   var windSpeed = d3.scale.linear()
     .range([options.minWindDashCoefficient, options.maxWindDashCoefficient]);
+
+  function resizeChart() {
+    availWidth = width - margins.left - margins.right;
+    availHeight = height - margins.top - margins.bottom;
+
+    svg
+      .attr('viewBox', '0 0 ' + width + ' ' + height);
+
+    circleGroupRadius = Math.min(availWidth, availHeight) / 2 - options.circleGroupMargin;
+
+    circleGroup
+      .attr(
+        'transform',
+        'translate(' +
+        (availWidth / 2) +
+        ', ' +
+        (availHeight / 2) +
+        ')'
+      );
+
+    calendarWeekChart.setSize(window.innerHeight / height);
+  }
 
   function sunshine(d, i) {
     if (d.weather_desc === 'Sunny') {
@@ -259,19 +280,6 @@ var calendarChart = function() {
   function setWindSpeedDomain() {
     windSpeed
       .domain([windSpeedMin, windSpeedMax]);
-  }
-
-  function prepareCircleGroup() {
-    circleGroupRadius = Math.min(availWidth, availHeight) / 2 - options.circleGroupMargin;
-    circleGroup = mainGroup.append('g')
-      .attr(
-        'transform',
-        'translate(' +
-        (availWidth / 2) +
-        ', ' +
-        (availHeight / 2) +
-        ')'
-      );
   }
 
   function drawSpokes() {
@@ -577,20 +585,21 @@ var calendarChart = function() {
   }
 
   module.init = function() {
-    svg = d3.select('#calendar')
-      .attr('width', width)
-      .attr('height', height);
+    svg = d3.select('#calendar');
 
     mainGroup = svg.append('g')
       .attr('transform', 'translate(' + margins.left + ', ' + margins.top + ')');
 
+    circleGroup = mainGroup.append('g');
+
+    // resize chart accordingly
+
+    resizeChart();
+    window.addEventListener('resize', resizeChart, false);
+
     findMinMaxTempAllLocations();
     findMaxPrecipitationAllLocations();
     findMinMaxWindSpeedAllLocations();
-
-    // prepare circle group
-
-    prepareCircleGroup();
 
     // draw week lines
 

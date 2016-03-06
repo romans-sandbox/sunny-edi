@@ -16,6 +16,11 @@ $durations: (
         control: 200ms
 );
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   font: 16px 'Helvetica Neue', Helvetica, sans-serif;
@@ -23,6 +28,7 @@ body {
 
 div.main-container {
   overflow: hidden;
+  height: 100%;
 }
 
 div.content-container {
@@ -125,9 +131,10 @@ svg.legends {
   }
 }
 
-div.links {
-  position: absolute;
-  bottom: 0;
+div.page-links {
+  position: fixed;
+  bottom: 20px;
+  left: 40px;
 
   img {
     vertical-align: middle;
@@ -153,11 +160,13 @@ div.links {
 
 div.calendar-container {
   float: right;
-  width: 600px;
+  height: 100%;
   position: relative;
 }
 
 svg.calendar {
+  height: 100%;
+
   line.spoke {
     stroke: $beta;
   }
