@@ -596,6 +596,7 @@ var calendarChart = function() {
 
     resizeChart();
     window.addEventListener('resize', resizeChart, false);
+    window.addEventListener('orientationchange', resizeChart, false);
 
     findMinMaxTempAllLocations();
     findMaxPrecipitationAllLocations();
