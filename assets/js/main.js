@@ -1,3 +1,5 @@
+utils.checkRequirements();
+
 datasetsHelper.loadAlDatasets();
 
 datasetsHelper.readyAllCallback(function() {
