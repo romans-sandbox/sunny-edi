@@ -37,6 +37,11 @@ var calendarChart = function() {
     }
   };
 
+  // cached queries
+  var v = {};
+
+  v.container = document.querySelector('#calendar');
+
   var availWidth, availHeight;
 
   var data, tempMaxMin = 0, tempMaxMax = Infinity, precipitationMax = 0, windSpeedMin = 0, windSpeedMax = Infinity;
@@ -584,6 +589,11 @@ var calendarChart = function() {
     }
   }
 
+  function adjustContainerHeight() {
+    // Chrome bug when going fullscreen
+    v.container.style.height = window.innerHeight + 'px';
+  }
+
   module.init = function() {
     svg = d3.select('#calendar');
 
@@ -618,6 +628,12 @@ var calendarChart = function() {
     // everything's ready by now
 
     module.ready = true;
+
+    // events
+
+    adjustContainerHeight();
+    window.addEventListener('resize', adjustContainerHeight, false);
+    window.addEventListener('orientationchange', adjustContainerHeight, false);
   };
 
   module.update = function() {

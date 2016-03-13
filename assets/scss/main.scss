@@ -187,6 +187,7 @@ div.calendar-container {
 
 svg.calendar {
   height: 100%;
+  display: block;
 
   line.spoke {
     stroke: $k1;
