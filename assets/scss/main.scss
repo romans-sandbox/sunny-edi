@@ -79,7 +79,7 @@ div.year-control {
   transition: border-color map_get($durations, control);
 
   &:not(:last-child) {
-    margin-right: 15px;
+    margin-right: 20px;
   }
 
   &.active {
@@ -100,7 +100,7 @@ div.weather-control {
   transition: border-color map_get($durations, control);
 
   &:not(:last-child) {
-    margin-right: 30px;
+    margin-right: 40px;
   }
 
   &.active {
@@ -132,7 +132,7 @@ div.weather-icon {
 }
 
 div.legends-container {
-  margin-top: 100px;
+  margin-top: 60px;
 }
 
 svg.legends {

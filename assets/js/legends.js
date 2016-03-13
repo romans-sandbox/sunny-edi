@@ -2,7 +2,7 @@ var legends = function() {
   var module = {};
 
   var width = 400;
-  var height = 35;
+  var height = 80;
   var margins = {
     top: 0,
     right: 0,
@@ -11,135 +11,166 @@ var legends = function() {
   };
 
   var options = {
-    sunnySquareSize: 20,
-    sunnyInnerSpace: 5,
-    rainySquareWidth: 10,
-    rainySquareHeight: 5,
-    rainyItemsHeight: 30,
-    rainyInnerSpace: 5,
-    windySquareSize: 20,
-    windyInnerSpace: 5,
-    itemsInnerSpace: 20
+    sunnyGradientHeight: 10,
+    sunnyGradientMargin: 50,
+    sunnyGradientTextMargin: 15,
+    sunnyGradientTextHotOffset: 0,
+    sunnyGradientTextColdOffset: 200,
+    sunnyGradientTextCloudyOffset: 332,
+    rainyBarCount: 10,
+    rainyBarHeight: 60,
+    rainyBarInnerSpace: 2,
+    rainyTextMargin: 5,
+    rainyTextHeavyOffset: 0,
+    rainyTextLightOffset: 200,
+    rainyTextNoOffset: 353,
+    windyColorsHeight: 10,
+    windyColorsMargin: 50,
+    windyTextMargin: 55,
+    windyTextStrongMargin: 33,
+    windyTextGentleMargin: 163,
+    windyTextLightMargin: 305,
   };
 
   var availWidth = width - margins.left - margins.right;
   var availHeight = height - margins.top - margins.bottom;
 
-  var svg, mainGroup;
-  var sunnyGroup, accumulatedSunnyGroupWidth;
-  var rainyGroup, accumulatedRainyGroupWidth;
+  var svg, mainGroup, defs;
+  var sunnyGroup, sunnyGradientDef;
+  var rainyGroup;
   var windyGroup, accumulatedWindyGroupWidth;
 
   function drawSunnyItems() {
     sunnyGroup = mainGroup.append('g')
       .attr('class', 'sunny');
 
-    accumulatedSunnyGroupWidth = 0;
+    sunnyGradientDef = defs.append('linearGradient')
+      .attr('id', 'sunny-gradient');
 
-    drawSingleSunnyItem(k.k3, 'Hot Sunny Day');
-    drawSingleSunnyItem(k.k4, 'Cold Sunny Day');
-    drawSingleSunnyItem(k.k2, 'Cloudy Day');
-  }
+    sunnyGradientDef.append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', k.k3);
 
-  function drawSingleSunnyItem(squareColor, labelText) {
-    var square, text, textBox;
+    sunnyGradientDef.append('stop')
+      .attr('offset', '65%')
+      .attr('stop-color', k.k4);
 
-    square = sunnyGroup.append('rect')
-      .attr('x', accumulatedSunnyGroupWidth)
-      .attr('y', 0)
-      .attr('width', options.sunnySquareSize)
-      .attr('height', options.sunnySquareSize)
-      .style('fill', squareColor);
+    sunnyGradientDef.append('stop')
+      .attr('offset', '80%')
+      .attr('stop-color', k.k2);
 
-    text = sunnyGroup.append('text')
-      .attr('x', accumulatedSunnyGroupWidth + options.sunnySquareSize + options.sunnyInnerSpace)
-      .attr('y', 0)
+    sunnyGroup.append('rect')
+      .attr('x', 0)
+      .attr('y', options.sunnyGradientMargin)
+      .attr('width', availWidth)
+      .attr('height', options.sunnyGradientHeight)
+      .style('fill', 'url(#sunny-gradient)');
+
+    sunnyGroup.append('text')
+      .attr('x', options.sunnyGradientTextHotOffset)
+      .attr('y', options.sunnyGradientMargin + options.sunnyGradientTextMargin)
       .attr('dy', '1.1em')
       .style('font-size', '0.8em')
-      .text(labelText);
+      .text('Hot Sunny Day');
 
-    textBox = text.node().getBBox();
+    sunnyGroup.append('text')
+      .attr('x', options.sunnyGradientTextColdOffset)
+      .attr('y', options.sunnyGradientMargin + options.sunnyGradientTextMargin)
+      .attr('dy', '1.1em')
+      .style('font-size', '0.8em')
+      .text('Cold Sunny Day');
 
-    accumulatedSunnyGroupWidth +=
-      options.sunnySquareSize +
-      options.sunnyInnerSpace +
-      textBox.width +
-      options.itemsInnerSpace;
+    sunnyGroup.append('text')
+      .attr('x', options.sunnyGradientTextCloudyOffset)
+      .attr('y', options.sunnyGradientMargin + options.sunnyGradientTextMargin)
+      .attr('dy', '1.1em')
+      .style('font-size', '0.8em')
+      .text('Cloudy Day');
   }
 
   function drawRainyItems() {
+    var i;
+
     rainyGroup = mainGroup.append('g')
       .attr('class', 'rainy');
 
-    accumulatedRainyGroupWidth = 0;
+    for (i = 0; i < options.rainyBarCount; i++) {
+      drawSingleRainyItemColumn(
+        i === options.rainyBarCount - 1 ? 0.05 : 1 - i / options.rainyBarCount,
+        i
+      );
+    }
 
-    drawSingleRainyItem(5, 'Heavy Rain');
-    drawSingleRainyItem(2, 'Light Rain');
-    drawSingleRainyItem(0.3, 'No Rain');
+    rainyGroup.append('text')
+      .attr('x', options.rainyTextHeavyOffset)
+      .attr('y', options.rainyBarHeight + options.rainyTextMargin)
+      .attr('dy', '1.1em')
+      .style('font-size', '0.8em')
+      .text('Heavy Rain');
+
+    rainyGroup.append('text')
+      .attr('x', options.rainyTextLightOffset)
+      .attr('y', options.rainyBarHeight + options.rainyTextMargin)
+      .attr('dy', '1.1em')
+      .style('font-size', '0.8em')
+      .text('Light Rain');
+
+    rainyGroup.append('text')
+      .attr('x', options.rainyTextNoOffset)
+      .attr('y', options.rainyBarHeight + options.rainyTextMargin)
+      .attr('dy', '1.1em')
+      .style('font-size', '0.8em')
+      .text('No Rain');
   }
 
-  function drawSingleRainyItem(squareSize, labelText) {
-    var square, text, textBox;
-
-    square = rainyGroup.append('rect')
-      .attr('x', accumulatedRainyGroupWidth)
-      .attr('y', options.rainyItemsHeight - options.rainySquareHeight * squareSize)
-      .attr('width', options.rainySquareWidth)
-      .attr('height', options.rainySquareHeight * squareSize)
+  function drawSingleRainyItemColumn(sizeProportion, position) {
+    rainyGroup.append('rect')
+      .attr('x', position * ((availWidth + options.rainyBarInnerSpace) / options.rainyBarCount))
+      .attr('y', ((1 - sizeProportion) * options.rainyBarHeight))
+      .attr('width', availWidth / options.rainyBarCount - options.rainyBarInnerSpace)
+      .attr('height', sizeProportion * options.rainyBarHeight)
       .style('fill', k.k7);
-
-    text = rainyGroup.append('text')
-      .attr('x', accumulatedRainyGroupWidth + options.rainySquareWidth + options.rainyInnerSpace)
-      .attr('y', options.rainyItemsHeight)
-      .style('font-size', '0.8em')
-      .text(labelText);
-
-    textBox = text.node().getBBox();
-
-    accumulatedRainyGroupWidth +=
-      options.rainySquareWidth +
-      options.rainyInnerSpace +
-      textBox.width +
-      options.itemsInnerSpace;
   }
 
   function drawWindyItems() {
+    var i, colors;
+
     windyGroup = mainGroup.append('g')
       .attr('class', 'windy');
 
-    accumulatedWindyGroupWidth = 0;
+    colors = [k.k3, k.k8, k.k7];
 
-    drawSingleWindyItem(k.k7, 'Light Wind');
-    drawSingleWindyItem(k.k8, 'Gentle Wind');
-    drawSingleWindyItem(k.k3, 'Strong Wind');
-  }
+    for (i = 0; i < 3; i++) {
+      windyGroup.append('rect')
+        .attr('x', availWidth / 3 * i)
+        .attr('y', options.windyColorsMargin)
+        .attr('width', availWidth / 2)
+        .attr('height', options.windyColorsHeight)
+        .style('fill', colors[i]);
+    }
 
-  function drawSingleWindyItem(squareColor, labelText) {
-    var square, text, textBox;
-
-    square = windyGroup.append('rect')
-      .attr('x', accumulatedWindyGroupWidth)
-      .attr('y', 0)
-      .attr('width', options.windySquareSize)
-      .attr('height', options.windySquareSize)
-      .style('fill', squareColor);
-
-    text = windyGroup.append('text')
-      .attr('x', accumulatedWindyGroupWidth + options.windySquareSize + options.windyInnerSpace)
-      .attr('y', 0)
+    windyGroup.append('text')
+      .attr('x', options.windyTextStrongMargin)
+      .attr('y', options.windyColorsHeight + options.windyTextMargin)
       .attr('dy', '1.1em')
       .style('font-size', '0.8em')
-      .text(labelText);
+      .text('Strong Wind');
 
-    textBox = text.node().getBBox();
+    windyGroup.append('text')
+      .attr('x', options.windyTextGentleMargin)
+      .attr('y', options.windyColorsHeight + options.windyTextMargin)
+      .attr('dy', '1.1em')
+      .style('font-size', '0.8em')
+      .text('Gentle Wind');
 
-    accumulatedWindyGroupWidth +=
-      options.windySquareSize +
-      options.windyInnerSpace +
-      textBox.width +
-      options.itemsInnerSpace;
+    windyGroup.append('text')
+      .attr('x', options.windyTextLightMargin)
+      .attr('y', options.windyColorsHeight + options.windyTextMargin)
+      .attr('dy', '1.1em')
+      .style('font-size', '0.8em')
+      .text('Light Wind');
   }
-  
+
   function hideAll() {
     sunnyGroup.attr('class', 'sunny');
     rainyGroup.attr('class', 'rainy');
@@ -154,6 +185,8 @@ var legends = function() {
     mainGroup = svg.append('g')
       .attr('class', 'main-group')
       .attr('transform', 'translate(' + margins.left + ', ' + margins.top + ')');
+
+    defs = svg.append('defs');
 
     drawSunnyItems();
 
