@@ -7,8 +7,8 @@ datasetsHelper.readyAllCallback(function() {
   calendarChart.init();
   calendarControls.initLocationButtons();
   calendarControls.initYearButtons();
-  calendarControls.initWeatherButtons();
   calendarControls.initWeatherIcons();
+  calendarControls.initWeatherButtons();
   calendarControls.initFullscreenLink();
   calendarControls.initCreditsLink();
   legends.init();

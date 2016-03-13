@@ -1,13 +1,13 @@
-$alpha: #fff;
-$beta: #000;
-$gamma: #aaa;
-$delta: #fcff6c;
-$epsilon: #fff5b2;
-$zeta: #ddd;
-$eta: #8fa8f6;
-$theta: #eb6361;
-$iota: #eee;
-$kappa: #9d42a5;
+$k1: #222;
+$k2: #d3d1bd;
+$k3: #FF5252;
+$k4: #FFEB3B;
+$k5: #888;
+$k6: #444;
+$k7: #8fa8f6;
+$k8: #9d42a5;
+
+// alternative rain colour: #00BCD4;
 
 $durations: (
         week-slice-fading: 200ms,
@@ -24,6 +24,12 @@ body {
 body {
   margin: 0;
   font: 16px 'Helvetica Neue', Helvetica, sans-serif;
+  background: $k1;
+  color: $k5;
+}
+
+h1 {
+  color: $k2;
 }
 
 div.main-container {
@@ -33,11 +39,11 @@ div.main-container {
 
 div.content-container {
   position: relative;
-  height: 600px;
+  top: 50%;
+  transform: translateY(-50%);
   float: left;
   margin-right: -600px;
   padding-left: 40px;
-  padding-top: 20px;
 }
 
 div.location-controls {
@@ -56,7 +62,8 @@ div.location-control {
   }
 
   &.active {
-    border-color: $gamma;
+    color: $k2;
+    border-color: $k2;
   }
 }
 
@@ -76,7 +83,8 @@ div.year-control {
   }
 
   &.active {
-    border-color: $gamma;
+    color: $k2;
+    border-color: $k2;
   }
 }
 
@@ -96,12 +104,21 @@ div.weather-control {
   }
 
   &.active {
-    border-color: $gamma;
+    color: $k2;
+    border-color: $k2;
   }
 }
 
 div.weather-icon {
   margin-bottom: 5px;
+
+  &.active {
+    svg {
+      path {
+        fill: $k2;
+      }
+    }
+  }
 
   svg {
     display: block;
@@ -109,7 +126,7 @@ div.weather-icon {
     width: 50px;
 
     path {
-      fill: $gamma;
+      fill: $k5;
     }
   }
 }
@@ -128,6 +145,10 @@ svg.legends {
     &.visible {
       opacity: 1;
     }
+
+    text {
+      fill: $k2;
+    }
   }
 }
 
@@ -142,7 +163,7 @@ div.page-links {
   }
 
   a {
-    color: $beta;
+    color: $k5;
     text-transform: lowercase;
     font-size: 0.9em;
     text-decoration: none;
@@ -153,7 +174,7 @@ div.page-links {
 
     &:hover,
     &:active {
-      color: $theta;
+      color: $k2;
     }
   }
 }
@@ -168,7 +189,7 @@ svg.calendar {
   height: 100%;
 
   line.spoke {
-    stroke: $beta;
+    stroke: $k1;
   }
 
   g.spoke-dash-main-group {
@@ -181,14 +202,15 @@ svg.calendar {
   }
 
   text.month-name {
-    font-size: 0.7em;
+    font-size: 0.6em;
     text-anchor: middle;
     dominant-baseline: central;
-    fill: $gamma;
+    text-transform: uppercase;
+    fill: $k5;
   }
 
   path.week-slice {
-    fill: $epsilon;
+    fill: $k6;
     opacity: 0;
     transition: opacity map_get($durations, week-slice-fading);
 
@@ -201,38 +223,13 @@ svg.calendar {
     font-size: 0.6em;
     text-anchor: middle;
     dominant-baseline: central;
-    fill: $beta;
+    fill: $k2;
     opacity: 0;
     transition: opacity map_get($durations, week-slice-fading);
 
     &.visible {
       opacity: 1;
     }
-  }
-
-  text.location {
-    pointer-events: none;
-    font-size: 1.4em;
-    text-anchor: middle;
-    dominant-baseline: central;
-    fill: $beta;
-  }
-
-  rect.location-box {
-    fill: transparent;
-    stroke: $beta;
-    stroke-width: 1px;
-
-    &.active {
-      fill: $epsilon;
-    }
-  }
-
-  text.location-headline {
-    font-size: 1.4em;
-    text-anchor: middle;
-    dominant-baseline: central;
-    fill: $beta;
   }
 }
 
@@ -256,7 +253,7 @@ svg.week-calendar {
     path,
     line {
       fill: none;
-      stroke: $gamma;
+      stroke: $k5;
       shape-rendering: crispEdges;
     }
   }
@@ -269,26 +266,27 @@ svg.week-calendar {
 
   path.line {
     fill: none;
-    stroke: $beta;
+    stroke: $k5;
     stroke-width: 2px;
 
     &.max-temp {
-      stroke: $theta;
+      stroke: $k3;
     }
 
     &.min-temp {
-      stroke: $eta;
+      stroke: $k7;
     }
 
     &.zero {
       stroke-width: 1px;
       stroke-dasharray: 3px 3px;
-      stroke: $gamma;
+      stroke: $k5;
     }
   }
 
   g.tick {
     text {
+      fill: $k5;
       font-size: 0.6em;
     }
   }
@@ -296,6 +294,7 @@ svg.week-calendar {
   text.y-axis-label {
     text-anchor: end;
     font-size: 0.6em;
+    fill: $k5;
   }
 }
 
@@ -305,9 +304,9 @@ div.page-warning {
   left: 0;
   top: 0;
   width: 100%;
-  background: $theta;
+  background: $k3;
   box-sizing: border-box;
-  color: $alpha;
+  color: $k2;
   padding: 4px;
   pointer-events: none;
   opacity: 0;

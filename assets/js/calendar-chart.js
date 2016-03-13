@@ -117,7 +117,7 @@ var calendarChart = function() {
   var spokeDashes, spokeDashesDataChanged = false, spokeDashMainGroup, spokeDashGroups, spokeDashGroupsEnter;
 
   var warmth = d3.scale.linear()
-    .range([k.delta, k.theta]);
+    .range([k.k4, k.k3]);
 
   var precipitation = d3.scale.linear()
     .range([1, options.spokeRainyMaxLength]);
@@ -152,7 +152,7 @@ var calendarChart = function() {
       return warmth(d.max_temp);
     }
 
-    return k.zeta;
+    return k.k2;
   }
 
   function windColor(d, i) {
@@ -161,14 +161,14 @@ var calendarChart = function() {
     ratio = (d.wind_speed - windSpeedMin) / (windSpeedMax - windSpeedMin);
 
     if (ratio > 0.8) {
-      return k.theta;
+      return k.k3;
     }
 
     if (ratio > 0.5) {
-      return k.kappa;
+      return k.k8;
     }
 
-    return k.eta;
+    return k.k7;
   }
 
   function mapRadiansToDay(rad) {
@@ -304,7 +304,7 @@ var calendarChart = function() {
       .attr('x2', circleGroupRadius)
       .attr('y2', 0)
       .style('stroke-width', options.spokeWidth)
-      .style('stroke', k.alpha);
+      .style('stroke', k.k1);
 
     spokeDashMainGroup = circleGroup.append('g')
       .attr('class', 'spoke-dash-main-group');
@@ -378,7 +378,7 @@ var calendarChart = function() {
         .attr('x1', function(d, i) {
           return circleGroupRadius - precipitation(d.precip_mm);
         })
-        .style('stroke', k.eta);
+        .style('stroke', k.k7);
 
       return true;
     }
@@ -389,7 +389,7 @@ var calendarChart = function() {
         .transition()
         .duration(options.durations.spokeMorph)
         .attr('x1', circleGroupRadius - options.spokeWindyLength)
-        .style('stroke', k.iota);
+        .style('stroke', k.k1);
 
       spokeDashMainGroup
         .attr('class', 'spoke-dash-main-group visible');
@@ -423,7 +423,7 @@ var calendarChart = function() {
 
     weekLinesEnter = weekLines.enter().append('path')
       .attr('d', weekLineArc)
-      .style('fill', k.beta);
+      .style('fill', k.k5);
   }
 
   function drawMonthLines() {
@@ -442,7 +442,7 @@ var calendarChart = function() {
 
     monthLinesEnter = monthLines.enter().append('path')
       .attr('d', monthLineArc)
-      .style('fill', k.gamma)
+      .style('fill', k.k5)
       .moveToBack();
 
     monthLeftWings = circleGroup.selectAll('line.month-left-wing')
@@ -458,7 +458,7 @@ var calendarChart = function() {
       .attr('x2', circleGroupRadius + options.monthLineOffset + options.monthWingWidth)
       .attr('y2', 0)
       .style('stroke-width', options.monthLineWidth)
-      .style('stroke', k.gamma);
+      .style('stroke', k.k5);
 
     monthRightWings = circleGroup.selectAll('line.month-right-wing')
       .data(monthsData);
@@ -473,7 +473,7 @@ var calendarChart = function() {
       .attr('x2', circleGroupRadius + options.monthLineOffset + options.monthWingWidth)
       .attr('y2', 0)
       .style('stroke-width', options.monthLineWidth)
-      .style('stroke', k.gamma);
+      .style('stroke', k.k5);
 
     monthNameGroups = circleGroup.selectAll('text.month-name')
       .data(monthsData);

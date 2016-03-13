@@ -5,7 +5,7 @@ var calendarControls = function() {
   var v = {};
 
   var activeLocation, activeYear, activeWeatherCondition;
-  var locationButtons = {}, yearButtons = {}, weatherConditionButtons = {};
+  var locationButtons = {}, yearButtons = {}, weatherConditionButtons = {}, weatherConditionIcons = {};
 
   v.locationButtons = document.querySelectorAll('[data-location]');
   v.yearButtons = document.querySelectorAll('[data-year]');
@@ -35,6 +35,7 @@ var calendarControls = function() {
 
     for (i = 0; i < v.weatherConditionButtons.length; i++) {
       v.weatherConditionButtons[i].classList.remove('active');
+      v.weatherConditionIcons[i].classList.remove('active');
     }
   }
 
@@ -61,6 +62,7 @@ var calendarControls = function() {
       deactivateWeatherConditionControls();
       activeWeatherCondition = weatherCondition;
       weatherConditionButtons[weatherCondition].classList.add('active');
+      weatherConditionIcons[weatherCondition].classList.add('active');
       calendarChart.update();
     }
   }
@@ -114,7 +116,7 @@ var calendarControls = function() {
   };
 
   module.initWeatherIcons = function() {
-    var i, icon;
+    var i, icon, weatherCondition;
 
     for (i = 0; i < v.weatherConditionIcons.length; i++) {
       (function(container, icon) {
@@ -127,6 +129,14 @@ var calendarControls = function() {
             }
 
             container.appendChild(xml.documentElement);
+
+            weatherCondition = container.getAttribute('data-weather-icon');
+
+            weatherConditionIcons[weatherCondition] = container;
+
+            if (activeWeatherCondition === weatherCondition) {
+              container.classList.add('active');
+            }
           }
         );
       })(

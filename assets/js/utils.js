@@ -21,7 +21,7 @@ var utils = function() {
     height = window.innerHeight;
     widthHeightRatio = width / height;
 
-    valid = height > 500 && width > 950 && widthHeightRatio > 1.75;
+    valid = height > 500 && width > 950 || width < 950 && widthHeightRatio > 1.75;
 
     if (valid) {
       v.screenSizeReq.classList.remove('visible');

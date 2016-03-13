@@ -36,9 +36,9 @@ var legends = function() {
 
     accumulatedSunnyGroupWidth = 0;
 
-    drawSingleSunnyItem(k.theta, 'Hot Sunny Day');
-    drawSingleSunnyItem(k.delta, 'Cold Sunny Day');
-    drawSingleSunnyItem(k.gamma, 'Cloudy Day');
+    drawSingleSunnyItem(k.k3, 'Hot Sunny Day');
+    drawSingleSunnyItem(k.k4, 'Cold Sunny Day');
+    drawSingleSunnyItem(k.k2, 'Cloudy Day');
   }
 
   function drawSingleSunnyItem(squareColor, labelText) {
@@ -86,7 +86,7 @@ var legends = function() {
       .attr('y', options.rainyItemsHeight - options.rainySquareHeight * squareSize)
       .attr('width', options.rainySquareWidth)
       .attr('height', options.rainySquareHeight * squareSize)
-      .style('fill', k.eta);
+      .style('fill', k.k7);
 
     text = rainyGroup.append('text')
       .attr('x', accumulatedRainyGroupWidth + options.rainySquareWidth + options.rainyInnerSpace)
@@ -109,9 +109,9 @@ var legends = function() {
 
     accumulatedWindyGroupWidth = 0;
 
-    drawSingleWindyItem(k.eta, 'Light Wind');
-    drawSingleWindyItem(k.kappa, 'Gentle Wind');
-    drawSingleWindyItem(k.theta, 'Strong Wind');
+    drawSingleWindyItem(k.k7, 'Light Wind');
+    drawSingleWindyItem(k.k8, 'Gentle Wind');
+    drawSingleWindyItem(k.k3, 'Strong Wind');
   }
 
   function drawSingleWindyItem(squareColor, labelText) {
