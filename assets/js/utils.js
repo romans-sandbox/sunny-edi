@@ -11,7 +11,8 @@ var utils = function() {
   v.compatReq = document.querySelector('#compat-req');
 
   function checkSVGSupport() {
-    return document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#Shape", "1.0");
+    return 'SVGRect' in window;
+    //return document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#Shape", "1.0");
   }
 
   function checkScreenSizeRequirement() {
