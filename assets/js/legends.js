@@ -2,7 +2,7 @@ var legends = function() {
   var module = {};
 
   var width = 400;
-  var height = 80;
+  var height = 90;
   var margins = {
     top: 0,
     right: 0,
