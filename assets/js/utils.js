@@ -9,6 +9,7 @@ var utils = function() {
 
   v.screenSizeReq = document.querySelector('#screen-size-req');
   v.compatReq = document.querySelector('#compat-req');
+  v.mainContainer = document.querySelector('#main-container');
 
   function checkSVGSupport() {
     return 'SVGRect' in window;
@@ -26,8 +27,10 @@ var utils = function() {
 
     if (valid) {
       v.screenSizeReq.classList.remove('visible');
+      v.mainContainer.classList.remove('blur');
     } else {
       v.screenSizeReq.classList.add('visible');
+      v.mainContainer.classList.add('blur');
     }
   }
 
@@ -46,8 +49,19 @@ var utils = function() {
   };
 
   module.checkRequirements = function() {
+    v.screenSizeReq.addEventListener('click', function() {
+      v.screenSizeReq.classList.remove('visible');
+      v.mainContainer.classList.remove('blur');
+    }, false);
+
+    v.compatReq.addEventListener('click', function() {
+      v.compatReq.classList.remove('visible');
+      v.mainContainer.classList.remove('blur');
+    }, false);
+
     if (!checkSVGSupport()) {
       v.compatReq.classList.add('visible');
+      v.mainContainer.classList.add('blur');
     } else {
       checkScreenSizeRequirement();
       window.addEventListener('resize', checkScreenSizeRequirement, false);
