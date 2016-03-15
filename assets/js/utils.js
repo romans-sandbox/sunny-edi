@@ -10,6 +10,7 @@ var utils = function() {
   v.screenSizeReq = document.querySelector('#screen-size-req');
   v.compatReq = document.querySelector('#compat-req');
   v.mainContainer = document.querySelector('#main-container');
+  v.pageLinks = document.querySelector('#page-links');
 
   function checkSVGSupport() {
     return 'SVGRect' in window;
@@ -17,20 +18,21 @@ var utils = function() {
   }
 
   function checkScreenSizeRequirement() {
-    var width, height, widthHeightRatio, valid;
+    var width, height, valid;
 
     width = window.innerWidth;
     height = window.innerHeight;
-    widthHeightRatio = width / height;
 
-    valid = height > 500 && width > 950 || width < 950 && widthHeightRatio > 1.75;
+    valid = width - height > 460 && height > 500;
 
     if (valid) {
       v.screenSizeReq.classList.remove('visible');
       v.mainContainer.classList.remove('blur');
+      v.pageLinks.classList.remove('invisible');
     } else {
       v.screenSizeReq.classList.add('visible');
       v.mainContainer.classList.add('blur');
+      v.pageLinks.classList.add('invisible');
     }
   }
 
@@ -52,16 +54,19 @@ var utils = function() {
     v.screenSizeReq.addEventListener('click', function() {
       v.screenSizeReq.classList.remove('visible');
       v.mainContainer.classList.remove('blur');
+      v.pageLinks.classList.remove('invisible');
     }, false);
 
     v.compatReq.addEventListener('click', function() {
       v.compatReq.classList.remove('visible');
       v.mainContainer.classList.remove('blur');
+      v.pageLinks.classList.remove('invisible');
     }, false);
 
     if (!checkSVGSupport()) {
       v.compatReq.classList.add('visible');
       v.mainContainer.classList.add('blur');
+      v.pageLinks.classList.add('invisible');
     } else {
       checkScreenSizeRequirement();
       window.addEventListener('resize', checkScreenSizeRequirement, false);

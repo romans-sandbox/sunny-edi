@@ -161,6 +161,12 @@ div.page-links {
   bottom: 20px;
   left: 40px;
 
+  &.invisible {
+    :not(img) {
+      visibility: hidden;
+    }
+  }
+
   img {
     vertical-align: middle;
     margin-right: 20px;
