@@ -13,4 +13,12 @@ datasetsHelper.readyAllCallback(function() {
   calendarControls.initCreditsLink();
   legends.init();
   calendarControls.setStatus('edinburgh', '2015', 'sunny');
+
+  utils.initAdaptContentEvents(function(isDesktop) {
+    sync.sync(isDesktop);
+
+    if (!isDesktop) {
+      sync.initSyncControls();
+    }
+  });
 });

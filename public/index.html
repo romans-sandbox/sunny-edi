@@ -13,15 +13,21 @@
   <div class="main-container" id="main-container">
     <div class="content-container">
       <h1>Sunny Edinburgh Project</h1>
-      <div class="joystick-container"></div>
-      <div class="location-controls">
-        <div class="location-control" data-location="edinburgh">Edinburgh</div><div class="location-control" data-location="madrid">Madrid</div>
+      <div class="controls" id="controls">
+        <div class="joystick-container"></div>
+        <div class="location-controls">
+          <div class="location-control" data-location="edinburgh">Edinburgh</div><div class="location-control" data-location="madrid">Madrid</div>
+        </div>
+        <div class="year-controls">
+          <div class="year-control" data-year="2011">2011</div><div class="year-control" data-year="2012">2012</div><div class="year-control" data-year="2013">2013</div><div class="year-control" data-year="2014">2014</div><div class="year-control" data-year="2015">2015</div>
+        </div>
+        <div class="weather-controls">
+          <div class="weather-control" data-weather="sunny"><div class="weather-icon" data-weather-icon="sunny"></div><div>Sunny Days</div></div><div class="weather-control" data-weather="rainy"><div class="weather-icon" data-weather-icon="rainy"></div><div>Rainy Days</div></div><div class="weather-control" data-weather="windy"><div class="weather-icon" data-weather-icon="windy"></div><div>Windy Days</div></div>
+        </div>
       </div>
-      <div class="year-controls">
-        <div class="year-control" data-year="2011">2011</div><div class="year-control" data-year="2012">2012</div><div class="year-control" data-year="2013">2013</div><div class="year-control" data-year="2014">2014</div><div class="year-control" data-year="2015">2015</div>
-      </div>
-      <div class="weather-controls">
-        <div class="weather-control" data-weather="sunny"><div class="weather-icon" data-weather-icon="sunny"></div><div>Sunny Days</div></div><div class="weather-control" data-weather="rainy"><div class="weather-icon" data-weather-icon="rainy"></div><div>Rainy Days</div></div><div class="weather-control" data-weather="windy"><div class="weather-icon" data-weather-icon="windy"></div><div>Windy Days</div></div>
+      <div class="sync-container" id="sync-container">
+        <input type="text" pattern="\d*" title="sync" id="sync-field">
+        <button type="button" id="sync-submit">sync</button>
       </div>
       <div class="legends-container">
         <svg xmlns="http://www.w3.org/2000/svg" id="legends" class="legends"></svg>
@@ -38,10 +44,12 @@
     <a href="#" id="credits">Credits</a>
     <a href="https://nullmighty.com" target="_blank">Visit NULLMIGHTY</a>
   </div>
+  <script src="assets/js/socket.io-1.4.5.min.js"></script>
   <script src="assets/js/d3.min.js"></script>
   <script src="assets/js/d3-extension.js"></script>
   <script src="assets/js/params.js"></script>
   <script src="assets/js/utils.js"></script>
+  <script src="assets/js/sync.js"></script>
   <script src="assets/js/datasets-helper.js"></script>
   <script src="assets/js/calendar-chart.js"></script>
   <script src="assets/js/calendar-week-chart.js"></script>

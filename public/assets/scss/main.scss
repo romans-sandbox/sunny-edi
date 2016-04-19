@@ -43,6 +43,10 @@ div.main-container {
   &.invisible {
     display: none;
   }
+
+  div.sync-container {
+    display: none;
+  }
 }
 
 div.content-container {
@@ -407,6 +411,22 @@ div.main-container.mobile {
           fill: $k9;
         }
       }
+    }
+  }
+
+  div.sync-container {
+    display: block;
+
+    &.invisible {
+      display: none;
+    }
+  }
+
+  div.controls {
+    display: none;
+
+    &.visible {
+      display: block;
     }
   }
 

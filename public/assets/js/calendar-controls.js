@@ -45,6 +45,7 @@ var calendarControls = function() {
       activeLocation = location;
       locationButtons[location].classList.add('active');
       calendarChart.update();
+      sync.emitStatus();
     }
   }
 
@@ -54,6 +55,7 @@ var calendarControls = function() {
       activeYear = year;
       yearButtons[year].classList.add('active');
       calendarChart.update();
+      sync.emitStatus();
     }
   }
 
@@ -64,6 +66,7 @@ var calendarControls = function() {
       weatherConditionButtons[weatherCondition].classList.add('active');
       weatherConditionIcons[weatherCondition].classList.add('active');
       calendarChart.update();
+      sync.emitStatus();
     }
   }
 
@@ -229,6 +232,7 @@ var calendarControls = function() {
       locationButtons[location].classList.add('active');
       yearButtons[year].classList.add('active');
       weatherConditionButtons[weatherCondition].classList.add('active');
+      weatherCondition in weatherConditionIcons && weatherConditionIcons[weatherCondition].classList.add('active');
       calendarChart.update();
     }
   };

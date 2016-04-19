@@ -10,27 +10,35 @@ var utils = function() {
   v.compatReq = document.querySelector('#compat-req');
   v.mainContainer = document.querySelector('#main-container');
   v.pageLinks = document.querySelector('#page-links');
+  
+  var pastIsDesktop;
 
   function checkSVGSupport() {
     return 'SVGRect' in window;
     //return document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#Shape", "1.0");
   }
 
-  function adaptContent() {
-    var width, height, desktop;
+  function adaptContent(changeCallback) {
+    var width, height, isDesktop;
 
     width = window.innerWidth;
     height = window.innerHeight;
 
-    desktop = width - height > 460 && height > 500;
+    isDesktop = width - height > 460 && height > 500;
 
-    if (desktop) {
+    if (isDesktop) {
       v.mainContainer.classList.remove('mobile');
       v.pageLinks.classList.remove('invisible');
     } else {
       v.mainContainer.classList.add('mobile');
       v.pageLinks.classList.add('invisible');
     }
+
+    if (pastIsDesktop !== isDesktop) {
+      changeCallback(isDesktop);
+    }
+
+    pastIsDesktop = isDesktop;
   }
 
   module.monthName = function(i) {
@@ -58,11 +66,17 @@ var utils = function() {
       v.compatReq.classList.add('visible');
       v.mainContainer.classList.add('blur');
       v.pageLinks.classList.add('invisible');
-    } else {
-      adaptContent();
-      window.addEventListener('resize', adaptContent, false);
-      window.addEventListener('orientationchange', adaptContent, false);
     }
+  };
+
+  module.initAdaptContentEvents = function(changeCallback) {
+    adaptContent(changeCallback);
+    window.addEventListener('resize', function() {
+      adaptContent(changeCallback);
+    }, false);
+    window.addEventListener('orientationchange', function() {
+      adaptContent(changeCallback);
+    }, false);
   };
 
   module.setWeatherConditionLabel = function(weatherCondition) {
