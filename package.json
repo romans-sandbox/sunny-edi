@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "license": "UNLICENSED",
-  "author": "romans <romans.dev@gmail.com>",
+  "author": "nullmighty <hello@nullmighty.com>",
+  "contributors": [
+    "romans <romans.dev@gmail.com>"
+  ],
   "dependencies": {
     "d3": "^3.5.13",
+    "express": "^4.13.4",
     "node-sass": "^3.4.2",
-    "sass-loader": "^3.1.2"
+    "sass-loader": "^3.2.0",
+    "socket.io": "^1.4.5"
   },
   "devDependencies": {},
   "scripts": {}

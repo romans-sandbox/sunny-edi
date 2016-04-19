@@ -1,0 +1,221 @@
+html,
+body {
+  height: 100%; }
+
+body {
+  margin: 0;
+  font: 16px 'Helvetica Neue', Helvetica, sans-serif;
+  background: #222;
+  color: #888; }
+
+h1 {
+  color: #d3d1bd; }
+
+div.main-container {
+  overflow: hidden;
+  height: 100%; }
+  div.main-container.blur {
+    filter: blur(5px); }
+
+div.content-container {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  float: left;
+  margin-right: -600px;
+  padding-left: 40px; }
+
+div.location-controls {
+  margin-top: 30px; }
+
+div.location-control {
+  display: inline-block;
+  cursor: default;
+  padding-bottom: 1px;
+  border-bottom: 3px solid transparent;
+  transition: border-color 200ms; }
+  div.location-control:not(:last-child) {
+    margin-right: 15px; }
+  div.location-control.active {
+    color: #d3d1bd;
+    border-color: #d3d1bd; }
+
+div.year-controls {
+  margin-top: 30px; }
+
+div.year-control {
+  display: inline-block;
+  cursor: default;
+  padding-bottom: 1px;
+  border-bottom: 3px solid transparent;
+  transition: border-color 200ms; }
+  div.year-control:not(:last-child) {
+    margin-right: 20px; }
+  div.year-control.active {
+    color: #d3d1bd;
+    border-color: #d3d1bd; }
+
+div.weather-controls {
+  margin-top: 30px; }
+
+div.weather-control {
+  display: inline-block;
+  cursor: default;
+  padding-bottom: 1px;
+  border-bottom: 3px solid transparent;
+  transition: border-color 200ms; }
+  div.weather-control:not(:last-child) {
+    margin-right: 40px; }
+  div.weather-control.active {
+    color: #d3d1bd;
+    border-color: #d3d1bd; }
+
+div.weather-icon {
+  margin-bottom: 5px; }
+  div.weather-icon.active svg path {
+    fill: #d3d1bd; }
+  div.weather-icon svg {
+    display: block;
+    margin: 0 auto;
+    width: 50px; }
+    div.weather-icon svg path {
+      fill: #888; }
+
+div.legends-container {
+  margin-top: 60px; }
+
+svg.legends g.sunny,
+svg.legends g.rainy,
+svg.legends g.windy {
+  opacity: 0;
+  transition: opacity 500ms; }
+  svg.legends g.sunny.visible,
+  svg.legends g.rainy.visible,
+  svg.legends g.windy.visible {
+    opacity: 1; }
+  svg.legends g.sunny text,
+  svg.legends g.rainy text,
+  svg.legends g.windy text {
+    fill: #d3d1bd; }
+
+div.page-links {
+  position: fixed;
+  bottom: 20px;
+  left: 40px; }
+  div.page-links.invisible :not(img) {
+    visibility: hidden; }
+  div.page-links img {
+    vertical-align: middle;
+    margin-right: 20px; }
+  div.page-links a {
+    color: #888;
+    text-transform: lowercase;
+    font-size: 0.9em;
+    text-decoration: none; }
+    div.page-links a:not(:last-child) {
+      margin-right: 10px; }
+    div.page-links a:hover, div.page-links a:active {
+      color: #d3d1bd; }
+
+div.calendar-container {
+  float: right;
+  height: 100%;
+  position: relative; }
+
+svg.calendar {
+  height: 100%;
+  display: block; }
+  svg.calendar line.spoke {
+    stroke: #222; }
+  svg.calendar g.spoke-dash-main-group {
+    opacity: 0;
+    transition: opacity 500ms; }
+    svg.calendar g.spoke-dash-main-group.visible {
+      opacity: 1; }
+  svg.calendar text.month-name {
+    font-size: 0.6em;
+    text-anchor: middle;
+    dominant-baseline: central;
+    text-transform: uppercase;
+    fill: #888; }
+  svg.calendar path.week-slice {
+    fill: #444;
+    opacity: 0;
+    transition: opacity 200ms; }
+    svg.calendar path.week-slice.visible {
+      opacity: 1; }
+  svg.calendar text.week-number-label {
+    font-size: 0.6em;
+    text-anchor: middle;
+    dominant-baseline: central;
+    fill: #d3d1bd;
+    opacity: 0;
+    transition: opacity 200ms; }
+    svg.calendar text.week-number-label.visible {
+      opacity: 1; }
+
+svg.week-calendar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none; }
+  svg.week-calendar g.main-group {
+    opacity: 0;
+    transition: opacity 500ms; }
+    svg.week-calendar g.main-group.visible {
+      opacity: 1; }
+  svg.week-calendar g.axis path,
+  svg.week-calendar g.axis line {
+    fill: none;
+    stroke: #888;
+    shape-rendering: crispEdges; }
+  svg.week-calendar g.axis.x path {
+    display: none; }
+  svg.week-calendar path.line {
+    fill: none;
+    stroke: #888;
+    stroke-width: 2px; }
+    svg.week-calendar path.line.max-temp {
+      stroke: #FF5252; }
+    svg.week-calendar path.line.min-temp {
+      stroke: #8fa8f6; }
+    svg.week-calendar path.line.zero {
+      stroke-width: 1px;
+      stroke-dasharray: 3px 3px;
+      stroke: #888; }
+  svg.week-calendar g.tick text {
+    fill: #888;
+    font-size: 0.6em; }
+  svg.week-calendar text.y-axis-label {
+    text-anchor: end;
+    font-size: 0.6em;
+    fill: #888; }
+
+div.page-warning {
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  background: #222;
+  box-sizing: border-box;
+  color: #FFEB3B;
+  padding: 20px;
+  pointer-events: none;
+  opacity: 0;
+  text-align: center;
+  transform: translateY(-50%); }
+  div.page-warning.visible {
+    pointer-events: auto;
+    opacity: 1; }
+  div.page-warning span.ignore {
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 5px;
+    border-bottom: 3px solid #d3d1bd; }
+    div.page-warning span.ignore:before {
+      display: table;
+      content: ' '; }
+
+/*# sourceMappingURL=main.css.map */
