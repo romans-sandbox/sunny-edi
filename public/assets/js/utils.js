@@ -7,7 +7,6 @@ var utils = function() {
   // cached queries
   var v = {};
 
-  v.screenSizeReq = document.querySelector('#screen-size-req');
   v.compatReq = document.querySelector('#compat-req');
   v.mainContainer = document.querySelector('#main-container');
   v.pageLinks = document.querySelector('#page-links');
@@ -17,21 +16,19 @@ var utils = function() {
     //return document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#Shape", "1.0");
   }
 
-  function checkScreenSizeRequirement() {
-    var width, height, valid;
+  function adaptContent() {
+    var width, height, desktop;
 
     width = window.innerWidth;
     height = window.innerHeight;
 
-    valid = width - height > 460 && height > 500;
+    desktop = width - height > 460 && height > 500;
 
-    if (valid) {
-      v.screenSizeReq.classList.remove('visible');
-      v.mainContainer.classList.remove('blur');
+    if (desktop) {
+      v.mainContainer.classList.remove('mobile');
       v.pageLinks.classList.remove('invisible');
     } else {
-      v.screenSizeReq.classList.add('visible');
-      v.mainContainer.classList.add('blur');
+      v.mainContainer.classList.add('mobile');
       v.pageLinks.classList.add('invisible');
     }
   }
@@ -51,12 +48,6 @@ var utils = function() {
   };
 
   module.checkRequirements = function() {
-    v.screenSizeReq.addEventListener('click', function() {
-      v.screenSizeReq.classList.remove('visible');
-      v.mainContainer.classList.remove('blur');
-      v.pageLinks.classList.remove('invisible');
-    }, false);
-
     v.compatReq.addEventListener('click', function() {
       v.compatReq.classList.remove('visible');
       v.mainContainer.classList.remove('blur');
@@ -68,10 +59,15 @@ var utils = function() {
       v.mainContainer.classList.add('blur');
       v.pageLinks.classList.add('invisible');
     } else {
-      checkScreenSizeRequirement();
-      window.addEventListener('resize', checkScreenSizeRequirement, false);
-      window.addEventListener('orientationchange', checkScreenSizeRequirement, false);
+      adaptContent();
+      window.addEventListener('resize', adaptContent, false);
+      window.addEventListener('orientationchange', adaptContent, false);
     }
+  };
+
+  module.setWeatherConditionLabel = function(weatherCondition) {
+    v.mainContainer.classList.remove('sunny', 'rainy', 'windy');
+    v.mainContainer.classList.add(weatherCondition);
   };
 
   return module;

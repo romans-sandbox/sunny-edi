@@ -660,6 +660,8 @@ var calendarChart = function() {
     updateSpokesAndDashes(status.weatherCondition);
 
     legends.show(status.weatherCondition);
+
+    utils.setWeatherConditionLabel(status.weatherCondition);
   };
 
   module.ready = false;

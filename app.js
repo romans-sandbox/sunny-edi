@@ -7,3 +7,7 @@ var port = process.env.PORT || 8080;
 io.listen(app.listen(port));
 
 app.use(express.static(__dirname + '/public'));
+
+io.sockets.on('connection', function(socket) {
+  console.log('User connected.');
+});

@@ -6,6 +6,8 @@ $k5: #888;
 $k6: #444;
 $k7: #8fa8f6;
 $k8: #9d42a5;
+$k9: #fff;
+$k10: #eee;
 
 // alternative rain colour: #00BCD4;
 
@@ -13,7 +15,8 @@ $durations: (
         week-slice-fading: 200ms,
         spoke-dash-fading: 500ms,
         week-calendar: 500ms,
-        control: 200ms
+        control: 200ms,
+        mobile-background: 500ms
 );
 
 html,
@@ -35,9 +38,10 @@ h1 {
 div.main-container {
   overflow: hidden;
   height: 100%;
+  transition: background-color map_get($durations, mobile-background);
 
-  &.blur {
-    filter: blur(5px);
+  &.invisible {
+    display: none;
   }
 }
 
@@ -162,8 +166,12 @@ div.page-links {
   left: 40px;
 
   &.invisible {
+    left: 0;
+    width: 100%;
+    text-align: center;
+
     :not(img) {
-      visibility: hidden;
+      display: none;
     }
   }
 
@@ -339,5 +347,85 @@ div.page-warning {
       display: table;
       content: ' ';
     }
+  }
+}
+
+div.main-container.mobile {
+  color: $k9;
+
+  &.sunny {
+    background: $k3;
+  }
+
+  &.rainy {
+    background: $k7;
+  }
+
+  &.windy {
+    background: $k8;
+  }
+
+  div.content-container {
+    top: 0;
+    transform: translateY(0);
+    float: none;
+    margin-right: 0;
+    padding-left: 0;
+    text-align: center;
+
+    h1 {
+      font-size: 1.2em;
+      color: $k9;
+    }
+
+    div.weather-control {
+      margin: 0 10px;
+
+      div.weather-icon {
+        svg {
+          width: 30px;
+        }
+      }
+    }
+
+    div.location-control,
+    div.weather-control,
+    div.year-control {
+      &.active {
+        color: $k9;
+        border-color: $k9;
+      }
+    }
+
+    div.weather-icon {
+      svg path {
+        fill: $k9;
+      }
+
+      &.active {
+        svg path {
+          fill: $k9;
+        }
+      }
+    }
+  }
+
+  div.calendar-container,
+  div.legends-container {
+    display: none;
+  }
+
+  div.joystick-container {
+    width: 200px;
+    height: 200px;
+    border: 1px dotted $k9;
+    border-radius: 100%;
+    margin: 0 auto;
+  }
+
+  div.location-controls,
+  div.year-controls,
+  div.weather-controls {
+    margin-top: 15px;
   }
 }
