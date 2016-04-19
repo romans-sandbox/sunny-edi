@@ -16,7 +16,8 @@ $durations: (
         spoke-dash-fading: 500ms,
         week-calendar: 500ms,
         control: 200ms,
-        mobile-background: 500ms
+        mobile-background: 500ms,
+        calendar-middle: 500ms
 );
 
 html,
@@ -56,6 +57,12 @@ div.content-container {
   float: left;
   margin-right: -600px;
   padding-left: 40px;
+  transition: opacity map_get($durations, calendar-middle);
+
+  &.invisible {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 div.location-controls {
@@ -205,6 +212,12 @@ div.calendar-container {
   float: right;
   height: 100%;
   position: relative;
+  transition: margin-right map_get($durations, calendar-middle), transform map_get($durations, calendar-middle);
+
+  &.middle {
+    margin-right: 50%;
+    transform: translateX(50%);
+  }
 }
 
 svg.calendar {

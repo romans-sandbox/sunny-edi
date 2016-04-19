@@ -26,7 +26,11 @@ div.content-container {
   transform: translateY(-50%);
   float: left;
   margin-right: -600px;
-  padding-left: 40px; }
+  padding-left: 40px;
+  transition: opacity 500ms; }
+  div.content-container.invisible {
+    opacity: 0;
+    pointer-events: none; }
 
 div.location-controls {
   margin-top: 30px; }
@@ -127,7 +131,11 @@ div.page-links {
 div.calendar-container {
   float: right;
   height: 100%;
-  position: relative; }
+  position: relative;
+  transition: margin-right 500ms, transform 500ms; }
+  div.calendar-container.middle {
+    margin-right: 50%;
+    transform: translateX(50%); }
 
 svg.calendar {
   height: 100%;

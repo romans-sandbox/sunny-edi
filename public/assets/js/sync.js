@@ -34,9 +34,12 @@ var sync = function() {
 
       socket.on('link', function(found, userKey) {
         if (found) {
-          alert('yes!');
           module.hideSyncControls();
           key = userKey;
+
+          if (isDesktop) {
+            utils.middleCalendar(true);
+          }
         } else {
           alert('no!');
         }
@@ -50,6 +53,10 @@ var sync = function() {
         }
 
         socket = null;
+
+        if (isDesktop) {
+          utils.middleCalendar(false);
+        }
 
         module.sync(isDesktop);
       });

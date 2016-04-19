@@ -10,6 +10,8 @@ var utils = function() {
   v.compatReq = document.querySelector('#compat-req');
   v.mainContainer = document.querySelector('#main-container');
   v.pageLinks = document.querySelector('#page-links');
+  v.calendarContainer = document.querySelector('#calendar-container');
+  v.contentContainer = document.querySelector('#content-container');
   
   var pastIsDesktop;
 
@@ -82,6 +84,18 @@ var utils = function() {
   module.setWeatherConditionLabel = function(weatherCondition) {
     v.mainContainer.classList.remove('sunny', 'rainy', 'windy');
     v.mainContainer.classList.add(weatherCondition);
+  };
+
+  module.middleCalendar = function(yes) {
+    if (yes) {
+      v.calendarContainer.classList.add('middle');
+      v.pageLinks.classList.add('invisible');
+      v.contentContainer.classList.add('invisible');
+    } else {
+      v.calendarContainer.classList.remove('middle');
+      v.pageLinks.classList.remove('invisible');
+      v.contentContainer.classList.remove('invisible');
+    }
   };
 
   return module;

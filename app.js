@@ -42,6 +42,7 @@ io.on('connection', function(socket) {
       if (userKey in instances) {
         instances[userKey].mobile = socket;
         socket.emit('link', true, userKey);
+        socket.broadcast.emit('link', true, userKey);
         console.log('v', instances[userKey].desktop.id, instances[userKey].mobile.id);
       } else {
         socket.emit('link', false);
