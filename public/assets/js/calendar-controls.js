@@ -263,7 +263,21 @@ var calendarControls = function() {
       ev.preventDefault();
     }, false);
 
+    v.joystick.addEventListener('touchstart', function(ev) {
+      tracking = true;
+
+      if (ev.changedTouches && ev.changedTouches.length > 0) {
+        sync.emitRad(computeRad(ev.changedTouches[0]));
+      }
+
+      ev.preventDefault();
+    }, false);
+
     document.addEventListener('mouseup', function() {
+      tracking = false;
+    }, false);
+
+    document.addEventListener('touchend', function() {
       tracking = false;
     }, false);
 
@@ -277,7 +291,9 @@ var calendarControls = function() {
 
     document.addEventListener('touchmove', function(ev) {
       if (tracking) {
-        sync.emitRad(computeRad(ev));
+        if (ev.changedTouches && ev.changedTouches.length > 0) {
+          sync.emitRad(computeRad(ev.changedTouches[0]));
+        }
 
         ev.preventDefault();
       }
