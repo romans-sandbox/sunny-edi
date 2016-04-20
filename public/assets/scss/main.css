@@ -18,7 +18,41 @@ div.main-container {
   div.main-container.invisible {
     display: none; }
   div.main-container div.sync-container {
-    display: none; }
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    width: 100%; }
+    div.main-container div.sync-container input,
+    div.main-container div.sync-container button {
+      display: block;
+      margin: 0 auto; }
+    div.main-container div.sync-container input {
+      font-size: 5em;
+      width: 250px;
+      text-align: center;
+      border-width: 0;
+      background: #eee;
+      -webkit-appearance: button; }
+      div.main-container div.sync-container input::-moz-focus-inner {
+        padding: 0;
+        border: 0; }
+      div.main-container div.sync-container input:focus {
+        outline-style: none;
+        box-shadow: none; }
+    div.main-container div.sync-container button {
+      margin-top: 10px;
+      border-width: 0;
+      background: #d3d1bd;
+      font-size: 2em;
+      padding: 3px 15px 5px;
+      -webkit-appearance: button; }
+      div.main-container div.sync-container button::-moz-focus-inner {
+        padding: 0;
+        border: 0; }
+      div.main-container div.sync-container button:focus {
+        outline-style: none;
+        box-shadow: none; }
 
 div.content-container {
   position: relative;
@@ -27,7 +61,8 @@ div.content-container {
   float: left;
   margin-right: -600px;
   padding-left: 40px;
-  transition: opacity 500ms; }
+  transition: opacity 500ms;
+  height: 100%; }
   div.content-container.invisible {
     opacity: 0;
     pointer-events: none; }
@@ -258,12 +293,12 @@ div.page-warning {
 
 div.main-container.mobile {
   color: #fff; }
-  div.main-container.mobile.sunny {
-    background: #FF5252; }
-  div.main-container.mobile.rainy {
-    background: #8fa8f6; }
-  div.main-container.mobile.windy {
-    background: #9d42a5; }
+  div.main-container.mobile.sync.sunny {
+    background: #be3c3c; }
+  div.main-container.mobile.sync.rainy {
+    background: #47b; }
+  div.main-container.mobile.sync.windy {
+    background: #7c357c; }
   div.main-container.mobile div.content-container {
     top: 0;
     transform: translateY(0);
@@ -299,9 +334,9 @@ div.main-container.mobile {
   div.main-container.mobile div.legends-container {
     display: none; }
   div.main-container.mobile div.joystick-container {
-    width: 300px;
-    height: 300px;
-    border: 1px dotted #fff;
+    width: 250px;
+    height: 250px;
+    border: 3px solid #fff;
     border-radius: 100%;
     margin: 0 auto;
     -webkit-user-select: none;

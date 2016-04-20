@@ -42,13 +42,17 @@ var sync = function() {
 
             if (isDesktop) {
               utils.middleCalendar(true);
+            } else {
+              utils.syncLabel(true);
             }
-          } else {
-            alert('no!');
-          }
 
-          module.resetSyncControls();
+            return;
+          }
         }
+
+        alert('Incorrect key!');
+
+        module.resetSyncControls();
       });
 
       data.socket.on('disconnect', function() {
@@ -60,6 +64,8 @@ var sync = function() {
 
         if (isDesktop) {
           utils.middleCalendar(false);
+        } else {
+          utils.syncLabel(false);
         }
 
         module.sync(isDesktop);
@@ -144,6 +150,8 @@ var sync = function() {
 
   module.showSyncControls = function() {
     v.syncControlsContainer.classList.remove('invisible');
+    v.syncField.value = '';
+    v.syncField.focus();
     v.controlsContainer.classList.remove('visible');
   };
 

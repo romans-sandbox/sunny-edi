@@ -1,11 +1,14 @@
 $k1: #222;
 $k2: #d3d1bd;
 $k3: #FF5252;
+$k3x: #be3c3c;
 $k4: #FFEB3B;
 $k5: #888;
 $k6: #444;
 $k7: #8fa8f6;
+$k7x: #47b;
 $k8: #9d42a5;
+$k8x: #7c357c;
 $k9: #fff;
 $k10: #eee;
 
@@ -46,7 +49,61 @@ div.main-container {
   }
 
   div.sync-container {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     display: none;
+    width: 100%;
+
+    input,
+    button {
+      display: block;
+      margin: 0 auto;
+    }
+
+    input {
+      font-size: 5em;
+      width: 250px;
+      text-align: center;
+      border-width: 0;
+      background: $k10;
+
+      // legacy
+      -webkit-appearance: button;
+
+      // legacy
+      &::-moz-focus-inner {
+        padding: 0;
+        border: 0;
+      }
+
+      &:focus {
+        outline-style: none;
+        box-shadow: none;
+      }
+    }
+
+    button {
+      margin-top: 10px;
+      border-width: 0;
+      background: $k2;
+      font-size: 2em;
+      padding: 3px 15px 5px;
+
+      // legacy
+      -webkit-appearance: button;
+
+      // legacy
+      &::-moz-focus-inner {
+        padding: 0;
+        border: 0;
+      }
+
+      &:focus {
+        outline-style: none;
+        box-shadow: none;
+      }
+    }
   }
 }
 
@@ -58,6 +115,7 @@ div.content-container {
   margin-right: -600px;
   padding-left: 40px;
   transition: opacity map_get($durations, calendar-middle);
+  height: 100%;
 
   &.invisible {
     opacity: 0;
@@ -407,16 +465,18 @@ div.page-warning {
 div.main-container.mobile {
   color: $k9;
 
-  &.sunny {
-    background: $k3;
-  }
+  &.sync {
+    &.sunny {
+      background: $k3x;
+    }
 
-  &.rainy {
-    background: $k7;
-  }
+    &.rainy {
+      background: $k7x;
+    }
 
-  &.windy {
-    background: $k8;
+    &.windy {
+      background: $k8x;
+    }
   }
 
   div.content-container {
@@ -486,9 +546,9 @@ div.main-container.mobile {
   }
 
   div.joystick-container {
-    width: 300px;
-    height: 300px;
-    border: 1px dotted $k9;
+    width: 250px;
+    height: 250px;
+    border: 3px solid $k9;
     border-radius: 100%;
     margin: 0 auto;
     -webkit-user-select: none;

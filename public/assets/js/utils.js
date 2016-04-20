@@ -103,5 +103,13 @@ var utils = function() {
     }
   };
 
+  module.syncLabel = function(yes) {
+    if (yes) {
+      v.mainContainer.classList.add('sync');
+    } else {
+      v.mainContainer.classList.remove('sync');
+    }
+  };
+
   return module;
 }();
