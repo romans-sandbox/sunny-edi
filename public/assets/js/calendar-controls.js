@@ -274,6 +274,14 @@ var calendarControls = function() {
         ev.preventDefault();
       }
     }, false);
+
+    document.addEventListener('touchmove', function(ev) {
+      if (tracking) {
+        sync.emitRad(computeRad(ev));
+
+        ev.preventDefault();
+      }
+    }, false);
   };
 
   module.syncNumberContainer = function(visible) {
