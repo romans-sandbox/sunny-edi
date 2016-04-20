@@ -37,7 +37,7 @@ io.on('connection', function(socket) {
 
       socket.emit('key', key);
 
-      console.log(key);
+      console.log('k', socket.id, key);
     } else if (identity === 'mobile' && userKey) {
       if (userKey in instances) {
         instances[userKey].mobile = socket;
@@ -55,8 +55,6 @@ io.on('connection', function(socket) {
   });
 
   socket.on('update-status', function(userKey, location, year, weatherCondition) {
-    console.log('update', userKey);
-
     if (userKey) {
       instances[userKey].location = location;
       instances[userKey].year = year;
@@ -64,6 +62,8 @@ io.on('connection', function(socket) {
 
       socket.emit('status', userKey, location, year, weatherCondition);
       socket.broadcast.emit('status', userKey, location, year, weatherCondition);
+
+      console.log('u', userKey);
     }
   });
 
@@ -83,6 +83,8 @@ io.on('connection', function(socket) {
           }
 
           delete instances[key];
+
+          console.log('d', key);
 
           break;
         }
