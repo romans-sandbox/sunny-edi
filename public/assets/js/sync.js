@@ -35,18 +35,20 @@ var sync = function() {
       });
 
       data.socket.on('link', function(found, key) {
-        if (found) {
-          module.hideSyncControls();
-          module.setKey(key);
+        if (key == data.key) {
+          if (found) {
+            module.hideSyncControls();
+            module.setKey(key);
 
-          if (isDesktop) {
-            utils.middleCalendar(true);
+            if (isDesktop) {
+              utils.middleCalendar(true);
+            }
+          } else {
+            alert('no!');
           }
-        } else {
-          alert('no!');
-        }
 
-        module.resetSyncControls();
+          module.resetSyncControls();
+        }
       });
 
       data.socket.on('disconnect', function() {
@@ -112,6 +114,8 @@ var sync = function() {
 
       v.syncField.disabled = true;
       v.syncSubmit.disabled = true;
+
+      module.setKey(userKey);
 
       module.identify('mobile', userKey);
     }, false);
