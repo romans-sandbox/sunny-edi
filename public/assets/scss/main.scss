@@ -218,6 +218,43 @@ div.calendar-container {
     margin-right: 50%;
     transform: translateX(50%);
   }
+
+  div.sync {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    font-size: 1.8em;
+    text-align: center;
+    width: 100%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity map_get($durations, week-slice-fading);
+
+    &.visible {
+      opacity: 1;
+    }
+
+    span {
+      display: block;
+      font-size: 3em;
+      font-weight: 600;
+    }
+
+    div.after {
+      display: none;
+    }
+
+    &.synced {
+      div.before {
+        display: none;
+      }
+
+      div.after {
+        display: block;
+      }
+    }
+  }
 }
 
 svg.calendar {

@@ -94,10 +94,12 @@ var utils = function() {
       v.calendarContainer.classList.add('middle');
       v.pageLinks.classList.add('invisible');
       v.contentContainer.classList.add('invisible');
+      calendarControls.syncNumberContainerSynced(true);
     } else {
       v.calendarContainer.classList.remove('middle');
       v.pageLinks.classList.remove('invisible');
       v.contentContainer.classList.remove('invisible');
+      calendarControls.syncNumberContainerSynced(false);
     }
   };
 

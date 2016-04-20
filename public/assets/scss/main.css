@@ -136,6 +136,29 @@ div.calendar-container {
   div.calendar-container.middle {
     margin-right: 50%;
     transform: translateX(50%); }
+  div.calendar-container div.sync {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    font-size: 1.8em;
+    text-align: center;
+    width: 100%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 200ms; }
+    div.calendar-container div.sync.visible {
+      opacity: 1; }
+    div.calendar-container div.sync span {
+      display: block;
+      font-size: 3em;
+      font-weight: 600; }
+    div.calendar-container div.sync div.after {
+      display: none; }
+    div.calendar-container div.sync.synced div.before {
+      display: none; }
+    div.calendar-container div.sync.synced div.after {
+      display: block; }
 
 svg.calendar {
   height: 100%;

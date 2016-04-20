@@ -14,6 +14,7 @@ var calendarControls = function() {
   v.fullscreenLink = document.querySelector('#fullscreen');
   v.creditsLink = document.querySelector('#credits');
   v.joystick = document.querySelector('#joystick');
+  v.syncNumberContainer = document.querySelector('#sync-number-container');
 
   function deactivateLocationControls() {
     var i;
@@ -273,6 +274,22 @@ var calendarControls = function() {
         ev.preventDefault();
       }
     }, false);
+  };
+
+  module.syncNumberContainer = function(visible) {
+    if (visible) {
+      v.syncNumberContainer.classList.add('visible');
+    } else {
+      v.syncNumberContainer.classList.remove('visible');
+    }
+  };
+
+  module.syncNumberContainerSynced = function(synced) {
+    if (synced) {
+      v.syncNumberContainer.classList.add('synced');
+    } else {
+      v.syncNumberContainer.classList.remove('synced');
+    }
   };
 
   return module;

@@ -532,6 +532,7 @@ var calendarChart = function() {
     weekNumberLabelText.attr('class', 'week-number-label visible');
 
     calendarWeekChart.show();
+    calendarControls.syncNumberContainer(false);
   }
 
   function hideWeekSlice() {
@@ -539,6 +540,10 @@ var calendarChart = function() {
     weekNumberLabelText.attr('class', 'week-number-label');
 
     calendarWeekChart.hide();
+
+    if (sync.getKey()) {
+      calendarControls.syncNumberContainer(true);
+    }
   }
 
   function moveWeekSlice() {

@@ -7,6 +7,7 @@ var sync = function() {
   v.controlsContainer = document.querySelector('#controls');
   v.syncField = document.querySelector('#sync-field');
   v.syncSubmit = document.querySelector('#sync-submit');
+  v.syncNumber = document.querySelector('#sync-number');
 
   var re = {
     key: /^\d{4}$/
@@ -30,13 +31,13 @@ var sync = function() {
       }
 
       data.socket.on('key', function(key) {
-        data.key = key;
+        module.setKey(key);
       });
 
       data.socket.on('link', function(found, key) {
         if (found) {
           module.hideSyncControls();
-          data.key = key;
+          module.setKey(key);
 
           if (isDesktop) {
             utils.middleCalendar(true);
@@ -89,6 +90,12 @@ var sync = function() {
 
   module.getKey = function() {
     return data.key;
+  };
+
+  module.setKey = function(key) {
+    data.key = key;
+    v.syncNumber.innerHTML = key;
+    calendarControls.syncNumberContainer(true);
   };
 
   module.initSyncControls = function() {
