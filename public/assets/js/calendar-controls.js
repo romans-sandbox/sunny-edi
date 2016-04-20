@@ -236,7 +236,7 @@ var calendarControls = function() {
     };
   };
 
-  module.setStatus = function(location, year, weatherCondition) {
+  module.setStatus = function(location, year, weatherCondition, isMobile) {
     if (calendarChart.ready) {
       deactivateLocationControls();
       deactivateYearControls();
@@ -248,7 +248,10 @@ var calendarControls = function() {
       yearButtons[year].classList.add('active');
       weatherConditionButtons[weatherCondition].classList.add('active');
       weatherCondition in weatherConditionIcons && weatherConditionIcons[weatherCondition].classList.add('active');
-      calendarChart.update();
+
+      if (!isMobile) {
+        calendarChart.update();
+      }
     }
   };
 

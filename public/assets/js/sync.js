@@ -67,7 +67,7 @@ var sync = function() {
 
       data.socket.on('status', function(key, location, year, weatherCondition) {
         if (key == data.key) {
-          calendarControls.setStatus(location, year, weatherCondition);
+          calendarControls.setStatus(location, year, weatherCondition, !isDesktop);
         }
       });
 
