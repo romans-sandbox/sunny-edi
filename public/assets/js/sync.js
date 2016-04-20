@@ -74,8 +74,19 @@ var sync = function() {
       if (isDesktop) {
         data.socket.on('status-rad', function(key, rad) {
           if (key == data.key) {
-            calendarChart.showWeekSliceTemporarily();
             calendarChart.drawWeekSlice(rad);
+          }
+        });
+
+        data.socket.on('status-show', function(key) {
+          if (key == data.key) {
+            calendarChart.showWeekSlice();
+          }
+        });
+
+        data.socket.on('status-hide', function(key) {
+          if (key == data.key) {
+            calendarChart.hideWeekSlice();
           }
         });
       }
@@ -151,6 +162,22 @@ var sync = function() {
   module.emitRad = function(rad) {
     if (data.socket) {
       data.socket.emit('rad', data.key, rad);
+    } else {
+      console.log('Socket undefined.');
+    }
+  };
+
+  module.emitShow = function() {
+    if (data.socket) {
+      data.socket.emit('show', data.key);
+    } else {
+      console.log('Socket undefined.');
+    }
+  };
+
+  module.emitHide = function() {
+    if (data.socket) {
+      data.socket.emit('hide', data.key);
     } else {
       console.log('Socket undefined.');
     }

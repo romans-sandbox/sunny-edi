@@ -258,6 +258,7 @@ var calendarControls = function() {
     v.joystick.addEventListener('mousedown', function(ev) {
       tracking = true;
 
+      sync.emitShow();
       sync.emitRad(computeRad(ev));
 
       ev.preventDefault();
@@ -267,6 +268,7 @@ var calendarControls = function() {
       tracking = true;
 
       if (ev.changedTouches && ev.changedTouches.length > 0) {
+        sync.emitShow();
         sync.emitRad(computeRad(ev.changedTouches[0]));
       }
 
@@ -275,10 +277,12 @@ var calendarControls = function() {
 
     document.addEventListener('mouseup', function() {
       tracking = false;
+      sync.emitHide();
     }, false);
 
     document.addEventListener('touchend', function() {
       tracking = false;
+      sync.emitHide();
     }, false);
 
     document.addEventListener('mousemove', function(ev) {

@@ -76,6 +76,24 @@ io.on('connection', function(socket) {
     }
   });
 
+  socket.on('show', function(userKey) {
+    if (userKey && userKey in instances) {
+      socket.emit('status-show', userKey);
+      socket.broadcast.emit('status-show', userKey);
+
+      console.log('1', userKey);
+    }
+  });
+
+  socket.on('hide', function(userKey) {
+    if (userKey && userKey in instances) {
+      socket.emit('status-hide', userKey);
+      socket.broadcast.emit('status-hide', userKey);
+
+      console.log('0', userKey);
+    }
+  });
+
   socket.on('disconnect', function() {
     var key;
 

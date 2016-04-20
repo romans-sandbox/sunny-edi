@@ -683,12 +683,9 @@ var calendarChart = function() {
 
   module.ready = false;
 
-  module.showWeekSliceTemporarily = function() {
-    window.clearTimeout(weekSliceTimeout);
+  module.showWeekSlice = showWeekSlice;
 
-    showWeekSlice();
-    weekSliceTimeout = window.setTimeout(hideWeekSlice, options.durations.tempWeekSlice);
-  };
+  module.hideWeekSlice = hideWeekSlice;
 
   return module;
 }();
