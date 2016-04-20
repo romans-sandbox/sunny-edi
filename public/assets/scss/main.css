@@ -61,8 +61,7 @@ div.content-container {
   float: left;
   margin-right: -600px;
   padding-left: 40px;
-  transition: opacity 500ms;
-  height: 100%; }
+  transition: opacity 500ms; }
   div.content-container.invisible {
     opacity: 0;
     pointer-events: none; }
@@ -184,6 +183,8 @@ div.calendar-container {
     transition: opacity 200ms; }
     div.calendar-container div.sync.visible {
       opacity: 1; }
+    div.calendar-container div.sync.none {
+      display: none; }
     div.calendar-container div.sync span {
       display: block;
       font-size: 3em;
@@ -305,7 +306,8 @@ div.main-container.mobile {
     float: none;
     margin-right: 0;
     padding-left: 0;
-    text-align: center; }
+    text-align: center;
+    height: 100%; }
     div.main-container.mobile div.content-container h1 {
       font-size: 1.2em;
       color: #fff; }

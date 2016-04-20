@@ -323,5 +323,9 @@ var calendarControls = function() {
     }
   };
 
+  module.syncNumberContainerNone = function() {
+    v.syncNumberContainer.classList.add('none');
+  };
+
   return module;
 }();

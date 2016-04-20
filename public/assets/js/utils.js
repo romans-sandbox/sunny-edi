@@ -12,6 +12,7 @@ var utils = function() {
   v.pageLinks = document.querySelector('#page-links');
   v.calendarContainer = document.querySelector('#calendar-container');
   v.contentContainer = document.querySelector('#content-container');
+  v.logotype = document.querySelector('#logotype');
   
   var pastIsDesktop;
 
@@ -82,6 +83,8 @@ var utils = function() {
     window.addEventListener('orientationchange', function() {
       adaptContent(changeCallback);
     }, false);
+
+    v.logotype.addEventListener('click', calendarControls.syncNumberContainerNone, false);
   };
 
   module.setWeatherConditionLabel = function(weatherCondition) {

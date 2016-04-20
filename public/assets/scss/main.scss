@@ -115,7 +115,6 @@ div.content-container {
   margin-right: -600px;
   padding-left: 40px;
   transition: opacity map_get($durations, calendar-middle);
-  height: 100%;
 
   &.invisible {
     opacity: 0;
@@ -291,6 +290,10 @@ div.calendar-container {
 
     &.visible {
       opacity: 1;
+    }
+
+    &.none {
+      display: none;
     }
 
     span {
@@ -486,6 +489,7 @@ div.main-container.mobile {
     margin-right: 0;
     padding-left: 0;
     text-align: center;
+    height: 100%;
 
     h1 {
       font-size: 1.2em;
