@@ -299,8 +299,8 @@ div.main-container.mobile {
   div.main-container.mobile div.legends-container {
     display: none; }
   div.main-container.mobile div.joystick-container {
-    width: 200px;
-    height: 200px;
+    width: 300px;
+    height: 300px;
     border: 1px dotted #fff;
     border-radius: 100%;
     margin: 0 auto;
