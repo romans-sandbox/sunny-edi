@@ -11,6 +11,7 @@ datasetsHelper.readyAllCallback(function() {
   calendarControls.initWeatherButtons();
   calendarControls.initFullscreenLink();
   calendarControls.initCreditsLink();
+  calendarControls.initJoystick();
   legends.init();
   calendarControls.setStatus('edinburgh', '2015', 'sunny');
 

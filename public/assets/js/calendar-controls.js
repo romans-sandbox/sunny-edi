@@ -13,6 +13,7 @@ var calendarControls = function() {
   v.weatherConditionIcons = document.querySelectorAll('[data-weather-icon]');
   v.fullscreenLink = document.querySelector('#fullscreen');
   v.creditsLink = document.querySelector('#credits');
+  v.joystick = document.querySelector('#joystick');
 
   function deactivateLocationControls() {
     var i;
@@ -68,6 +69,19 @@ var calendarControls = function() {
       calendarChart.update();
       sync.emitStatus();
     }
+  }
+
+  function computeRad(ev) {
+    var box, rad;
+
+    box = v.joystick.getBoundingClientRect();
+
+    rad = Math.atan2(
+      -(box.left - ev.pageX + box.width / 2),
+      box.top - ev.pageY + box.height / 2
+    );
+
+    return rad;
   }
 
   module.initLocationButtons = function() {
@@ -235,6 +249,30 @@ var calendarControls = function() {
       weatherCondition in weatherConditionIcons && weatherConditionIcons[weatherCondition].classList.add('active');
       calendarChart.update();
     }
+  };
+
+  module.initJoystick = function() {
+    var tracking = false;
+
+    v.joystick.addEventListener('mousedown', function(ev) {
+      tracking = true;
+
+      sync.emitRad(computeRad(ev));
+
+      ev.preventDefault();
+    }, false);
+
+    document.addEventListener('mouseup', function() {
+      tracking = false;
+    }, false);
+
+    document.addEventListener('mousemove', function(ev) {
+      if (tracking) {
+        sync.emitRad(computeRad(ev));
+
+        ev.preventDefault();
+      }
+    }, false);
   };
 
   return module;

@@ -67,6 +67,15 @@ var sync = function() {
           calendarControls.setStatus(location, year, weatherCondition);
         }
       });
+
+      if (isDesktop) {
+        data.socket.on('status-rad', function(key, rad) {
+          if (key == data.key) {
+            calendarChart.showWeekSliceTemporarily();
+            calendarChart.drawWeekSlice(rad);
+          }
+        });
+      }
     }
   };
 
@@ -123,6 +132,14 @@ var sync = function() {
 
     if (data.socket) {
       data.socket.emit('update-status', data.key, status.location, status.year, status.weatherCondition);
+    } else {
+      console.log('Socket undefined.');
+    }
+  };
+
+  module.emitRad = function(rad) {
+    if (data.socket) {
+      data.socket.emit('rad', data.key, rad);
     } else {
       console.log('Socket undefined.');
     }

@@ -55,7 +55,7 @@ io.on('connection', function(socket) {
   });
 
   socket.on('update-status', function(userKey, location, year, weatherCondition) {
-    if (userKey) {
+    if (userKey && userKey in instances) {
       instances[userKey].location = location;
       instances[userKey].year = year;
       instances[userKey].weatherCondition = weatherCondition;
@@ -64,6 +64,15 @@ io.on('connection', function(socket) {
       socket.broadcast.emit('status', userKey, location, year, weatherCondition);
 
       console.log('u', userKey);
+    }
+  });
+
+  socket.on('rad', function(userKey, rad) {
+    if (userKey && userKey in instances) {
+      socket.emit('status-rad', userKey, rad);
+      socket.broadcast.emit('status-rad', userKey, rad);
+
+      console.log('r', userKey, rad);
     }
   });
 

@@ -33,7 +33,8 @@ var calendarChart = function() {
     minWindDashCoefficient: 1,
     maxWindDashCoefficient: 30,
     durations: {
-      spokeMorph: 500
+      spokeMorph: 500,
+      tempWeekSlice: 1000
     }
   };
 
@@ -117,7 +118,7 @@ var calendarChart = function() {
   var monthLeftWings, monthLeftWingsEnter;
   var monthRightWings, monthRightWingsEnter;
   var monthNameGroups, monthNameGroupsEnter;
-  var weekSlice, weekSliceArc;
+  var weekSlice, weekSliceArc, weekSliceTimeout;
   var weekNumberLabelGroup, weekNumberLabelText;
   var spokeDashes, spokeDashesDataChanged = false, spokeDashMainGroup, spokeDashGroups, spokeDashGroupsEnter;
 
@@ -541,11 +542,20 @@ var calendarChart = function() {
   }
 
   function moveWeekSlice() {
-    var coords, rad, day, weekData, rotationStartAngle, rotationEndAngle, textLabelRotation;
+    var coords, rad;
 
     coords = d3.mouse(circleGroup.node());
 
     rad = Math.atan2(coords[0], -coords[1]);
+
+    drawWeekSlice(rad);
+
+    window.clearTimeout(weekSliceTimeout);
+  }
+
+  function drawWeekSlice(rad) {
+    var day, weekData, rotationStartAngle, rotationEndAngle, textLabelRotation;
+
     day = mapRadiansToDay(rad);
     weekData = dayToWeekData(day);
 
@@ -664,7 +674,16 @@ var calendarChart = function() {
     utils.setWeatherConditionLabel(status.weatherCondition);
   };
 
+  module.drawWeekSlice = drawWeekSlice;
+
   module.ready = false;
+
+  module.showWeekSliceTemporarily = function() {
+    window.clearTimeout(weekSliceTimeout);
+
+    showWeekSlice();
+    weekSliceTimeout = window.setTimeout(hideWeekSlice, options.durations.tempWeekSlice);
+  };
 
   return module;
 }();
