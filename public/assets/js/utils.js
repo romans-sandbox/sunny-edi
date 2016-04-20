@@ -30,7 +30,10 @@ var utils = function() {
 
     if (isDesktop) {
       v.mainContainer.classList.remove('mobile');
-      v.pageLinks.classList.remove('invisible');
+
+      if (!v.calendarContainer.classList.contains('middle')) {
+        v.pageLinks.classList.remove('invisible');
+      }
     } else {
       v.mainContainer.classList.add('mobile');
       v.pageLinks.classList.add('invisible');

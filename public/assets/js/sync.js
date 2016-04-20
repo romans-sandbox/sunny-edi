@@ -121,8 +121,8 @@ var sync = function() {
 
     status = calendarControls.getStatus();
 
-    if (status.socket) {
-      status.socket.emit('update-status', data.key, status.location, status.year, status.weatherCondition);
+    if (data.socket) {
+      data.socket.emit('update-status', data.key, status.location, status.year, status.weatherCondition);
     } else {
       console.log('Socket undefined.');
     }
