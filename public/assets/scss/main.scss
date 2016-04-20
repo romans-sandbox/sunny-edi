@@ -491,6 +491,8 @@ div.main-container.mobile {
     border: 1px dotted $k9;
     border-radius: 100%;
     margin: 0 auto;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
 
   div.location-controls,

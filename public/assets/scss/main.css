@@ -303,7 +303,9 @@ div.main-container.mobile {
     height: 200px;
     border: 1px dotted #fff;
     border-radius: 100%;
-    margin: 0 auto; }
+    margin: 0 auto;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none; }
   div.main-container.mobile div.location-controls,
   div.main-container.mobile div.year-controls,
   div.main-container.mobile div.weather-controls {
