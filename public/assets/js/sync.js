@@ -12,30 +12,31 @@ var sync = function() {
     key: /^\d{4}$/
   };
 
-  var socket = null;
-  var key = null;
+  var data = {
+    socket: null,
+    key: null
+  };
 
   module.sync = function(isDesktop) {
     if ('io' in window) {
-      if (socket) {
-        socket.disconnect();
+      if (data.socket) {
+        data.socket.disconnect();
       }
 
-      socket = io.connect('/');
+      data.socket = io.connect('/');
 
       if (isDesktop) {
         module.identify('desktop');
       }
 
-      socket.on('key', function(k) {
-        key = k;
-        alert(key);
+      data.socket.on('key', function(key) {
+        data.key = key;
       });
 
-      socket.on('link', function(found, userKey) {
+      data.socket.on('link', function(found, key) {
         if (found) {
           module.hideSyncControls();
-          key = userKey;
+          data.key = key;
 
           if (isDesktop) {
             utils.middleCalendar(true);
@@ -47,12 +48,12 @@ var sync = function() {
         module.resetSyncControls();
       });
 
-      socket.on('disconnect', function() {
+      data.socket.on('disconnect', function() {
         if (!isDesktop) {
           module.showSyncControls();
         }
 
-        socket = null;
+        data.socket = null;
 
         if (isDesktop) {
           utils.middleCalendar(false);
@@ -61,8 +62,8 @@ var sync = function() {
         module.sync(isDesktop);
       });
 
-      socket.on('status', function(userKey, location, year, weatherCondition) {
-        if (userKey == key) {
+      data.socket.on('status', function(key, location, year, weatherCondition) {
+        if (key == data.key) {
           calendarControls.setStatus(location, year, weatherCondition);
         }
       });
@@ -70,15 +71,15 @@ var sync = function() {
   };
 
   module.identify = function(identity, userKey) {
-    if (socket) {
-      socket.emit('identity', identity, userKey);
+    if (data.socket) {
+      data.socket.emit('identity', identity, userKey);
     } else {
       console.log('Socket undefined.');
     }
   };
 
   module.getKey = function() {
-    return key;
+    return data.key;
   };
 
   module.initSyncControls = function() {
@@ -120,8 +121,8 @@ var sync = function() {
 
     status = calendarControls.getStatus();
 
-    if (socket) {
-      socket.emit('update-status', key, status.location, status.year, status.weatherCondition);
+    if (status.socket) {
+      status.socket.emit('update-status', data.key, status.location, status.year, status.weatherCondition);
     } else {
       console.log('Socket undefined.');
     }
