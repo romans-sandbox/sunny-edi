@@ -348,4 +348,7 @@ div.main-container.mobile {
   div.main-container.mobile div.weather-controls {
     margin-top: 15px; }
 
+.logotype.invisible {
+  display: none; }
+
 /*# sourceMappingURL=main.css.map */

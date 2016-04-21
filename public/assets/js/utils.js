@@ -38,6 +38,7 @@ var utils = function() {
     } else {
       v.mainContainer.classList.add('mobile');
       v.pageLinks.classList.add('invisible');
+      v.logotype.classList.add('invisible');
     }
 
     if (pastIsDesktop !== isDesktop) {
