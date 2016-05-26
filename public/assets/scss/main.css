@@ -189,6 +189,8 @@ div.calendar-container {
       display: block;
       font-size: 3em;
       font-weight: 600; }
+    div.calendar-container div.sync div.visit {
+      font-size: 2em; }
     div.calendar-container div.sync div.after {
       display: none; }
     div.calendar-container div.sync.synced div.before {

@@ -50,7 +50,7 @@ var sync = function() {
           }
         }
 
-        alert('Incorrect key!');
+        console.log('Incorrect key!');
 
         module.resetSyncControls();
       });
@@ -124,7 +124,7 @@ var sync = function() {
       userKey = v.syncField.value.trim();
 
       if (!userKey.match(re.key)) {
-        alert('Wrong value.');
+        console.log('Wrong value.');
         v.syncField.focus();
         return;
       }
