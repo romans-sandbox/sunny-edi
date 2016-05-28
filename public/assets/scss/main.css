@@ -185,11 +185,11 @@ div.calendar-container {
       opacity: 1; }
     div.calendar-container div.sync.none {
       display: none; }
-    div.calendar-container div.sync span {
+    div.calendar-container div.sync span.n {
       display: block;
       font-size: 3em;
       font-weight: 600; }
-    div.calendar-container div.sync div.visit {
+    div.calendar-container div.sync span.visit {
       font-size: 2em; }
     div.calendar-container div.sync div.after {
       display: none; }
