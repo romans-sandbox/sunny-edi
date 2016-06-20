@@ -75,6 +75,8 @@ div.location-control {
   padding-bottom: 1px;
   border-bottom: 3px solid transparent;
   transition: border-color 200ms; }
+  div.location-control.invisible {
+    display: none; }
   div.location-control:not(:last-child) {
     margin-right: 15px; }
   div.location-control.active {

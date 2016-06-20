@@ -322,7 +322,7 @@ var calendarControls = function() {
   };
 
   module.syncNumberContainerNone = function() {
-    v.syncNumberContainer.classList.add('none');
+    v.syncNumberContainer.classList.remove('none');
   };
 
   return module;

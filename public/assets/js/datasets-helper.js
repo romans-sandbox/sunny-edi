@@ -56,6 +56,40 @@ var datasetsHelper = function() {
     }
   };
 
+  if (location.search === '?mawsynram-enabled') {
+    Object.assign(options.datasets, {
+      mawsynramWeather2011: {
+        source: 'assets/data/mawsynram-weather-2011.csv',
+        sourceType: 'csv',
+        ready: false
+      },
+      mawsynramWeather2012: {
+        source: 'assets/data/mawsynram-weather-2012.csv',
+        sourceType: 'csv',
+        ready: false
+      },
+      mawsynramWeather2013: {
+        source: 'assets/data/mawsynram-weather-2013.csv',
+        sourceType: 'csv',
+        ready: false
+      },
+      mawsynramWeather2014: {
+        source: 'assets/data/mawsynram-weather-2014.csv',
+        sourceType: 'csv',
+        ready: false
+      },
+      mawsynramWeather2015: {
+        source: 'assets/data/mawsynram-weather-2015.csv',
+        sourceType: 'csv',
+        ready: false
+      }
+    });
+
+    document.querySelector("#mawsynram").classList.remove('invisible');
+    document.querySelector('#enable-m').href = '.';
+    document.querySelector('#enable-m').innerHTML = 'Disable Mawsynram';
+  }
+
   var loadedDatasets = {};
   var readyAllCallbacks = [];
 

@@ -16,7 +16,7 @@
       <div class="controls" id="controls">
         <div class="joystick-container" id="joystick"></div>
         <div class="location-controls">
-          <div class="location-control" data-location="edinburgh">Edinburgh</div><div class="location-control" data-location="madrid">Madrid</div>
+          <div class="location-control" data-location="edinburgh">Edinburgh</div><div class="location-control" data-location="madrid">Madrid</div><div class="location-control invisible" data-location="mawsynram" id="mawsynram">Mawsynram</div>
         </div>
         <div class="year-controls">
           <div class="year-control" data-year="2011">2011</div><div class="year-control" data-year="2012">2012</div><div class="year-control" data-year="2013">2013</div><div class="year-control" data-year="2014">2014</div><div class="year-control" data-year="2015">2015</div>
@@ -36,7 +36,7 @@
     <div class="calendar-container" id="calendar-container">
       <svg xmlns="http://www.w3.org/2000/svg" id="calendar" class="calendar"></svg>
       <svg xmlns="http://www.w3.org/2000/svg" id="week-calendar" class="week-calendar" preserveAspectRatio="none"></svg>
-      <div class="sync visible" id="sync-number-container">
+      <div class="sync visible none" id="sync-number-container">
         <div class="before">
           sync your phone now
           <span class="n" id="sync-number"></span>
@@ -51,6 +51,7 @@
   <div class="page-links" id="page-links">
     <img src="assets/img/logo-horizontal-white@2x.png" width="100" id="logotype" class="logotype">
     <a href="#" id="fullscreen">Fullscreen</a>
+    <a href="?mawsynram-enabled" id="enable-m">Enable Mawsynram</a>
     <a href="#" id="credits">Credits</a>
     <a href="https://nullmighty.com" target="_blank">Visit NULLMIGHTY</a>
   </div>

@@ -37,6 +37,10 @@ var calendarChart = function() {
       tempWeekSlice: 1000
     }
   };
+  
+  if (location.search === '?mawsynram-enabled') {
+    options.spokeRainyMaxLength = 200;
+  }
 
   // cached queries
   var v = {};

@@ -133,6 +133,10 @@ div.location-control {
   border-bottom: 3px solid transparent;
   transition: border-color map_get($durations, control);
 
+  &.invisible {
+    display: none;
+  }
+
   &:not(:last-child) {
     margin-right: 15px;
   }
