@@ -190,12 +190,10 @@ var calendarControls = function() {
       if (on) {
         if (typeof fOut === 'function') {
           fOut.call(document);
-          v.fullscreenLink.innerHTML = 'Go Fullscreen';
         }
       } else {
         if (typeof f === 'function') {
           f.call(document.documentElement);
-          v.fullscreenLink.innerHTML = 'Exit Fullscreen';
         }
       }
     }, false);
