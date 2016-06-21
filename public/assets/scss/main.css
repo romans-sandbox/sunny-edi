@@ -31,8 +31,8 @@ div.main-container {
       font-size: 5em;
       width: 250px;
       text-align: center;
-      border-width: 0;
-      background: #eee;
+      background: #fff;
+      border: 5px solid #d3d1bd;
       -webkit-appearance: button; }
       div.main-container div.sync-container input::-moz-focus-inner {
         padding: 0;
@@ -340,8 +340,8 @@ div.main-container.mobile {
   div.main-container.mobile div.legends-container {
     display: none; }
   div.main-container.mobile div.joystick-container {
-    width: 250px;
-    height: 250px;
+    width: 220px;
+    height: 220px;
     border: 3px solid #fff;
     border-radius: 100%;
     margin: 0 auto;

@@ -5,7 +5,7 @@ var sync = function() {
 
   v.syncControlsContainer = document.querySelector('#sync-container');
   v.controlsContainer = document.querySelector('#controls');
-  v.syncField = document.querySelector('#sync-field');
+    v.syncField = document.querySelector('#sync-field');
   v.syncSubmit = document.querySelector('#sync-submit');
   v.syncNumber = document.querySelector('#sync-number');
 
@@ -118,6 +118,21 @@ var sync = function() {
   };
 
   module.initSyncControls = function() {
+    v.syncField.addEventListener('input', function() {
+      var self = this;
+
+      if (self.value.length === 4) {
+        v.syncSubmit.click();
+
+        self.readonly = true;
+
+        window.setTimeout(function() {
+          self.readonly = false;
+          self.blur();
+        }, 100);
+      }
+    }, false);
+
     v.syncSubmit.addEventListener('click', function() {
       var userKey;
 
