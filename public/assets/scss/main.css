@@ -40,6 +40,8 @@ div.main-container {
       div.main-container div.sync-container input:focus {
         outline-style: none;
         box-shadow: none; }
+      div.main-container div.sync-container input::placeholder {
+        font-size: 50%; }
     div.main-container div.sync-container button {
       margin-top: 10px;
       border-width: 0;
@@ -176,7 +178,7 @@ div.calendar-container {
     position: absolute;
     left: 0;
     top: 50%;
-    font-size: 1.8em;
+    font-size: 1.5em;
     text-align: center;
     width: 100%;
     transform: translateY(-50%);
@@ -189,7 +191,7 @@ div.calendar-container {
       display: none; }
     div.calendar-container div.sync span.n {
       display: block;
-      font-size: 3em;
+      font-size: 4em;
       font-weight: 600; }
     div.calendar-container div.sync span.visit {
       font-size: 2em; }

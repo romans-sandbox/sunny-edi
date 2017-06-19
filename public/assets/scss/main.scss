@@ -81,6 +81,10 @@ div.main-container {
         outline-style: none;
         box-shadow: none;
       }
+
+      &::placeholder {
+        font-size: 50%;
+      }
     }
 
     button {
@@ -284,7 +288,7 @@ div.calendar-container {
     position: absolute;
     left: 0;
     top: 50%;
-    font-size: 1.8em;
+    font-size: 1.5em;
     text-align: center;
     width: 100%;
     transform: translateY(-50%);
@@ -302,7 +306,7 @@ div.calendar-container {
 
     span.n {
       display: block;
-      font-size: 3em;
+      font-size: 4em;
       font-weight: 600;
     }
 
