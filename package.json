@@ -1,11 +1,11 @@
 {
-  "name": "romans-sunny-edi",
+  "name": "@nullmighty/sunny-edi",
   "version": "1.0.0",
   "private": true,
   "license": "UNLICENSED",
   "author": "nullmighty <hello@nullmighty.com>",
   "contributors": [
-    "romans <romans.dev@gmail.com>"
+    "Roman Evans <roman@nullmighty.com>"
   ],
   "dependencies": {
     "d3": "^3.5.13",
