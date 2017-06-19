@@ -37,8 +37,8 @@ var calendarChart = function() {
       tempWeekSlice: 1000
     }
   };
-  
-  if (location.search === '?mawsynram-enabled') {
+
+  if (localStorage.getItem('mawsynram') === 'true') {
     options.spokeRainyMaxLength = 200;
   }
 

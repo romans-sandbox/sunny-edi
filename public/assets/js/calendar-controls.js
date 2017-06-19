@@ -199,6 +199,33 @@ var calendarControls = function() {
     }, false);
   };
 
+  module.initSyncToggle = function() {
+    var toggleLink = document.querySelector('#sync-toggle');
+    var enabled = localStorage.getItem('sync-toggle') === 'true';
+    var cont = document.querySelector('#sync-number-container');
+
+    if (enabled) {
+      toggleLink.innerHTML = 'Disable Sync';
+      cont.classList.remove('none');
+    }
+
+    toggleLink.addEventListener('click', function(ev) {
+      ev.preventDefault();
+
+      if (enabled) {
+        toggleLink.innerHTML = 'Enable Sync';
+        localStorage.setItem('sync-toggle', 'false');
+        cont.classList.add('none');
+      } else {
+        toggleLink.innerHTML = 'Disable Sync';
+        localStorage.setItem('sync-toggle', 'true');
+        cont.classList.remove('none');
+      }
+
+      enabled = localStorage.getItem('sync-toggle') === 'true';
+    });
+  };
+
   module.initCreditsLink = function() {
     v.creditsLink.addEventListener('click', function(ev) {
       ev.preventDefault();

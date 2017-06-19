@@ -56,7 +56,7 @@ var datasetsHelper = function() {
     }
   };
 
-  if (location.search === '?mawsynram-enabled') {
+  if (localStorage.getItem('mawsynram') === 'true') {
     Object.assign(options.datasets, {
       mawsynramWeather2011: {
         source: 'assets/data/mawsynram-weather-2011.csv',
@@ -89,6 +89,24 @@ var datasetsHelper = function() {
     document.querySelector('#enable-m').href = '.';
     document.querySelector('#enable-m').innerHTML = 'Disable Mawsynram';
   }
+
+  var mmm = document.querySelector('#enable-m');
+
+  mmm.addEventListener('click', function(ev) {
+    ev.preventDefault();
+
+    if (localStorage.getItem('mawsynram') === 'true') {
+      mmm.innerHTML = 'Enable Mawsynram';
+      localStorage.setItem('mawsynram', 'false');
+      document.querySelector("#mawsynram").classList.add('invisible');
+    } else {
+      mmm.innerHTML = 'Disable Mawsynram';
+      localStorage.setItem('mawsynram', 'true');
+      document.querySelector("#mawsynram").classList.remove('invisible');
+    }
+
+    location.reload();
+  });
 
   var loadedDatasets = {};
   var readyAllCallbacks = [];
